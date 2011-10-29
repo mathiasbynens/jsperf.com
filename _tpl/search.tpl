@@ -12,7 +12,7 @@ if ($search) {
               OR x.info LIKE "' . $db->real_escape_string($search) . '"
  ORDER BY updated DESC';
  $result = $db->query($sql);
- 
+
  if ($result && $result->num_rows > 0) {
  $output = '<ul>';
   while ($item = $result->fetch_object()) {
@@ -27,7 +27,7 @@ if ($search) {
 <form action="/search" method="get">
  <p>Looking for a specific test case? Search!</p>
  <input name="q" placeholder="e.g. canvas">
- <input type="submit">
+ <input type="submit" value="Search">
 </form>
 <?php
 }
