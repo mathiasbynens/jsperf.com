@@ -58,51 +58,51 @@ RewriteRule ^_css/([0-9]*).css$ _css/main.css
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^api/json$ _api/json.php [L,NC]
+RewriteRule ^api/json$ _api/json.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^api/jsonp$ _api/jsonp.php [L,NC]
+RewriteRule ^api/jsonp$ _api/jsonp.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^browse/([a-z0-9-]+).atom/?$ index.php?slug=browseAuthor&author=$1&atom=true [L,NC]
+RewriteRule ^browse/([a-z0-9-]+).atom/?$ index.php?slug=browseAuthor&author=$1&atom=true [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^browse/([a-z0-9-]+)/?$ index.php?slug=browseAuthor&author=$1 [L,NC]
+RewriteRule ^browse/([a-z0-9-]+)/?$ index.php?slug=browseAuthor&author=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(edit|delete)-comment/([0-9]+)/?$ index.php?slug=$1Comment&id=$2 [L,NC]
+RewriteRule ^(edit|delete)-comment/([0-9]+)/?$ index.php?slug=$1Comment&id=$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+)/([0-9]+)/(edit|delete|publish|embed|dev)/?$ index.php?slug=$1&rev=$2&action=$3 [L,NC]
+RewriteRule ^([a-z0-9-]+)/([0-9]+)/(edit|delete|publish|embed|dev)/?$ index.php?slug=$1&rev=$2&action=$3 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+)/([0-9]+).atom/?$ index.php?slug=$1&rev=$2&atom=true [L,NC]
+RewriteRule ^([a-z0-9-]+)/([0-9]+).atom/?$ index.php?slug=$1&rev=$2&atom=true [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+)/([0-9]+)/?$ index.php?slug=$1&rev=$2 [L,NC]
+RewriteRule ^([a-z0-9-]+)/([0-9]+)/?$ index.php?slug=$1&rev=$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+)/(edit|delete|publish|embed|dev)/?$ index.php?slug=$1&action=$2 [L,NC]
+RewriteRule ^([a-z0-9-]+)/(edit|delete|publish|embed|dev)/?$ index.php?slug=$1&action=$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+).xml index.php?slug=$1.xml [L,NC]
+RewriteRule ^([a-z0-9-]+).xml index.php?slug=$1.xml [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+).atom index.php?slug=$1&atom=true [L,NC,QSA]
+RewriteRule ^([a-z0-9-]+).atom index.php?slug=$1&atom=true [L,QSA]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^([a-z0-9-]+)? index.php?slug=$1 [L,NC,QSA]
+RewriteRule ^([a-z0-9-]+)? index.php?slug=$1 [L,QSA]
 
 ErrorDocument 403 /403
 ErrorDocument 404 /404
