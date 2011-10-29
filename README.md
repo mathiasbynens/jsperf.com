@@ -16,7 +16,6 @@ php_admin_value auto_prepend_file start.php
 php_flag magic_quotes_gpc Off
 php_admin_value open_basedir /domains/jsperf.com/public_html/www/:/domains/jsperf.com/public_html/www/_tpl/:/domains/jsperf.com/public_html/www/_tpl/tpl-inc/:/domains/jsperf.com/public_html/www/_inc/
 php_admin_value include_path /domains/jsperf.com/public_html/www/:/domains/jsperf.com/public_html/www/_tpl/:/domains/jsperf.com/public_html/www/_tpl/tpl-inc/:/domains/jsperf.com/public_html/www/_inc/
-php_admin_value safe_mode 1
 php_admin_value file_uploads 0
 ```
 
