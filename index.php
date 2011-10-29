@@ -24,7 +24,7 @@ if ($_SERVER['HTTP_HOST'] != DOMAIN) {
 
 $home = $jsClass = $benchmark = $showAtom = $mainJS = $author = $update = $nameError = $mailError = $msgError = $slugError = $spamError = $codeError = $codeTitleError = $titleError = $error = $author = $authorEmail = $authorURL = $ga = $embed = false;
 
-if (isset($_GET['slug'])) {
+if (!empty($_GET['slug'])) {
  $slug = $_GET['slug'];
  $rev = isset($_GET['rev']) ? (int) $_GET['rev'] : 1;
  $action = isset($_GET['action']) && in_array($_GET['action'], $reservedActions) ? $_GET['action'] : false;
