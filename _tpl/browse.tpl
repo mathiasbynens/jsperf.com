@@ -2,7 +2,7 @@
 <h1>Browse latest 250 test cases</h1>
 <form action="/search" method="get">
  <p>Looking for a specific test case? Search!</p>
- <input name="q" placeholder="e.g. canvas">
+ <input type="search" name="q" placeholder="e.g. canvas">
  <input type="submit" value="Search">
 </form>
 <?php
