@@ -74,6 +74,14 @@ $reservedSlugs = array(
  'sitemap.xml'
 );
 
+$reservedActions = array(
+ 'edit',
+ 'delete',
+ 'publish',
+ 'embed',
+ 'dev'
+);
+
 function userAgent() {
  include_once('browser.php');
  $browser = new Browser();
