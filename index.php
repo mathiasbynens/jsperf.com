@@ -8,7 +8,7 @@ $home = $jsClass = $benchmark = $showAtom = $mainJS = $author = $update = $nameE
 if (isset($_GET['slug'])) {
  $slug = $_GET['slug'];
  $rev = isset($_GET['rev']) ? (int) $_GET['rev'] : 1;
- $action = isset($_GET['action']) ? in_array($_GET['action'], $reservedActions) ? $_GET['action'] : false : false;
+ $action = isset($_GET['action']) && in_array($_GET['action'], $reservedActions) ? $_GET['action'] : false;
  $id = isset($_GET['id']) ? (int) $_GET['id'] : false;
  $atom = isset($_GET['atom']);
  $author = isset($_GET['author']) ? $_GET['author'] : false;
