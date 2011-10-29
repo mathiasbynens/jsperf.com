@@ -1,0 +1,108 @@
+<IfModule mod_deflate.c>
+ AddOutputFilterByType DEFLATE text/html text/plain text/css application/json application/javascript text/xml application/xml text/x-component
+ <FilesMatch "\.(ttf|otf|eot|svg)$" >
+  SetOutputFilter DEFLATE
+ </FilesMatch>
+</IfModule>
+
+FileETag none
+
+AddType application/javascript;charset=UTF-8 .js
+AddType text/css;charset=UTF-8 .css
+
+<IfModule mod_expires.c>
+ ExpiresActive On
+ ExpiresByType image/gif "access plus 1 year"
+ ExpiresByType image/jpg "access plus 1 year"
+ ExpiresByType image/jpeg "access plus 1 year"
+ ExpiresByType image/png "access plus 1 year"
+ ExpiresByType text/css "access plus 1 year"
+ ExpiresByType application/javascript "access plus 1 year"
+ ExpiresByType image/x-icon "access plus 1 year"
+</IfModule>
+
+<IfModule mod_rewrite.c>
+
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^@$ http://twitter.com/jsprf [R=301,L]
+
+RewriteRule ^dart-disclaimer http://jsperf.com/dart [R=301,L]
+RewriteRule ^document-head-speed-test$ http://jsperf.com/document-head [R=301,L]
+RewriteRule ^testing$ http://jsperf.com/accessing-dom-elements [R=301,L]
+RewriteRule ^array-creating http://jsperf.com/literal-vs-constructor-array [R=301,L]
+RewriteRule ^jquery-each2-vs-quickeach-vs-each http://jsperf.com/jquery-each-vs-quickeach/2 [R=301,L]
+RewriteRule ^equlity-operators-with-the-same-types http://jsperf.com/equality-operators-with-the-same-types [R=301,L]
+RewriteRule ^math-min-a-b-vs-a-b-a-b http://jsperf.com/math-vs-greater-than [R=301,L]
+RewriteRule ^remove-all-child-nodes http://jsperf.com/removechildren/3 [R=301,L]
+
+RewriteCond %{HTTP_HOST} !^jsperf.com|^a\.jsperf.com|^dev\.jsperf.com$ [NC]
+RewriteRule ^(.*)$ http://jsperf.com%{REQUEST_URI} [R=301,L]
+
+RewriteCond %{HTTP_HOST} ^a.jsperf.com$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*).css$ _css/main.css
+
+RewriteCond %{HTTP_HOST} ^a.jsperf.com$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)-([0-9]+).js$ _js/$1.js
+
+RewriteCond %{HTTP_HOST} ^a.jsperf.com$ [NC]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*).js$ _js/$1.js
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^_css/([0-9]*).css$ _css/main.css
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/json$ _api/json.php [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^api/jsonp$ _api/jsonp.php [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^browse/([a-z0-9-]+).atom/?$ index.php?slug=browseAuthor&author=$1&atom=true [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^browse/([a-z0-9-]+)/?$ index.php?slug=browseAuthor&author=$1 [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(edit|delete)-comment/([0-9]+)/?$ index.php?slug=$1Comment&id=$2 [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/([0-9]+)/(edit|delete|publish|embed|dev)/?$ index.php?slug=$1&rev=$2&action=$3 [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/([0-9]+).atom/?$ index.php?slug=$1&rev=$2&atom=true [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/([0-9]+)/?$ index.php?slug=$1&rev=$2 [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)/(edit|delete|publish|embed|dev)/?$ index.php?slug=$1&action=$2 [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+).xml index.php?slug=$1.xml [L,NC]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+).atom index.php?slug=$1&atom=true [L,NC,QSA]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-z0-9-]+)? index.php?slug=$1 [L,NC,QSA]
+
+ErrorDocument 403 /403
+ErrorDocument 404 /404

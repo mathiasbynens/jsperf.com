@@ -1,0 +1,7 @@
+AuthType Basic
+AuthName "0mg h4x?"
+AuthUserFile /home/jsperf_com/public_html/_tmp/.htpasswd
+Require valid-user
+
+RewriteEngine On
+RewriteRule ^build$ build.php

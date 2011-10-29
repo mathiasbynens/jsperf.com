@@ -1,0 +1,10 @@
+K 16
+bugtraq:logregex
+V 18
+(SF)?\s*#\d+
+(\d+)
+K 11
+bugtraq:url
+V 92
+http://sourceforge.net/tracker/index.php?func=detail&aid=%BUGID%&group_id=114997&atid=670231
+END
