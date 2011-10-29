@@ -1,19 +1,19 @@
 <?php
 $includePath = implode(PATH_SEPARATOR, array_map(function ($dir) {
-	return __DIR__ . DIRECTORY_SEPARATOR . $dir;
+ return __DIR__ . DIRECTORY_SEPARATOR . $dir;
 }, array(
-	'.',
-	'_tpl',
-	'_tpl' . DIRECTORY_SEPARATOR . 'tpl-inc',
-	'_inc'
+ '.',
+ '_tpl',
+ '_tpl' . DIRECTORY_SEPARATOR . 'tpl-inc',
+ '_inc'
 )));
 ini_set('include_path', $includePath);
 if (ini_get('session.save_handler') === 'files') {
-	// Make sure the session handler still works when setting open_basedir.
-	$sessionSaveDir = session_save_path() ?: sys_get_temp_dir();
-	ini_set('open_basedir', $includePath . PATH_SEPARATOR . $sessionSaveDir);
+ // Make sure the session handler still works when setting open_basedir.
+ $sessionSaveDir = session_save_path() ?: sys_get_temp_dir();
+ ini_set('open_basedir', $includePath . PATH_SEPARATOR . $sessionSaveDir);
 } else {
-	ini_set('open_basedir', $includePath);
+ ini_set('open_basedir', $includePath);
 }
 require_once('start.php');
 
