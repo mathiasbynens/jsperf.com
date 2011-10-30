@@ -11,6 +11,7 @@
 <script src="//<?php echo ASSETS_DOMAIN; ?>/benchmark-<?php echo file_get_contents('_inc/version.txt'); ?>.js"></script>
 <?php
 }
+echo implode("\n", $item->scripts) . "\n";
 ?>
 <script>
 try {
