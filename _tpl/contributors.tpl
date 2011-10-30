@@ -1,7 +1,7 @@
 <?php $title = 'Contributors'; require('head.tpl'); ?>
 <h1>Contributors</h1>
-<p><a href="/">jsPerf</a> was created by <strong><a href="//mathiasbynens.be/">Mathias Bynens</a></strong> and launched on August 1st, 2010.</p>
-<p>On that day, Mathias also started the <a href="//benchmarkjs.com/">Benchmark.js</a> project, which was originally a heavily modified fork of <strong><a href="//www.broofa.com/">Robert Kieffer</a></strong>’s <a href="//www.broofa.com/Tools/JSLitmus/">JSLitmus</a>.</p>
-<p><strong>Lindsey Simon</strong> of Google was kind enough to extend the <a href="//www.browserscope.org/">Browserscope</a> API to allow jsPerf to programmatically submit new tests. This enables us to use Browserscope to collect test results across different platforms, devices and browsers.</p>
-<p>In October 2010, <strong><a href="//allyoucanleet.com/">John-David Dalton</a></strong> started collaborating on Benchmark.js, making the whole thing more generic, adding lots of awesome features (some of which would later find their way into jsPerf’s UI), fixing bugs, and adding support for pretty much every JavaScript environment out there. JD very quickly became the lead Benchmark.js developer.</p>
+<p><a href="/">jsPerf</a> was created by <strong><a href="//mathiasbynens.be/" title="Mathias Bynens, front-end web developer">Mathias Bynens</a></strong> and launched on August 1st, 2010.</p>
+<p>On the same day, Mathias also created the <a href="//benchmarkjs.com/">Benchmark.js</a> project, which was originally a heavily modified fork of <strong><a href="//www.broofa.com/">Robert Kieffer</a></strong>’s <a href="//www.broofa.com/Tools/JSLitmus/">JSLitmus</a>.</p>
+<p><strong>Lindsey Simon</strong>, of Google, was kind enough to extend the <a href="//www.browserscope.org/">Browserscope</a> API to allow jsPerf to programmatically submit new tests. This enabled jsPerf to use Browserscope to collect test results across different platforms, devices, and browsers.</p>
+<p>In October 2010, <strong><a href="//allyoucanleet.com/">John-David Dalton</a></strong> started collaborating on Benchmark.js, separating it from the jsPerf UI, adding lots of awesome features, fixing bugs, and adding support for pretty much every JavaScript environment out there. JD quickly became the lead Benchmark.js developer.</p>
 <?php $ga = true; require('foot.tpl'); ?>

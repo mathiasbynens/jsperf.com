@@ -1,6 +1,6 @@
 <?php $db->close(); ?>
 </article>
-<footer>© <a href="/">jsPerf.com</a> · <?php if (isset($_SESSION['authorSlug'])) { ?><a href="/browse/<?php echo $_SESSION['authorSlug']; ?>">My tests</a> · <?php } ?><a href="/browse">Browse latest tests</a> · <a href="/popular">Popular tests</a> · <a href="/faq">FAQ</a> · <a href="/faq#donate">Donate</a> · <a href="//twitter.com/jsprf" rel="nofollow">twitter: @jsprf</a> · <a href="https://github.com/mathiasbynens/jsperf.com">source on GitHub</a> · <a href="//benchmarkjs.com/">Benchmark.js</a> · by <a href="//mathiasbynens.be/" title="Mathias Bynens, front-end web developer">@mathias</a></footer>
+<footer>© <a href="/">jsPerf.com</a> · <?php if (isset($_SESSION['authorSlug'])) { ?><a href="/browse/<?php echo $_SESSION['authorSlug']; ?>">My tests</a> · <?php } ?><a href="/browse">Browse latest tests</a> · <a href="/popular">Popular tests</a> · <a href="/faq">FAQ</a> · <a href="/faq#donate">Donate</a> · <a href="//twitter.com/jsprf" rel="nofollow">twitter: @jsprf</a> · <a href="https://github.com/mathiasbynens/jsperf.com">source on GitHub</a> · <a href="//benchmarkjs.com/">Benchmark.js</a> · <a href="/contributors">Contributors</a></footer>
 <?php if ($benchmark) { if ($debug) { ?>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/platform.src.js"></script>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/benchmark.src.js"></script>
