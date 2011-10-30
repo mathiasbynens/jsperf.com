@@ -1,5 +1,9 @@
 <?php
 
+function __autoload($classname){
+	include_once(strtolower($classname).'.php');
+}
+
 require('config.php');
 
 // Whenever I want to test new CSS/JS/templates, I just add my IP to the array.
@@ -83,7 +87,6 @@ $reservedActions = array(
 );
 
 function userAgent() {
- include_once('browser.php');
  $browser = new Browser();
  return str_replace(array('Internet Explorer', 'iPhone'), array('IE', 'Mobile Safari'), $browser->getBrowser()) . ' ' . $browser->getVersion();
 }
