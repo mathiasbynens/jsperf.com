@@ -5,7 +5,7 @@ require('config.php');
 // Whenever I want to test new CSS/JS/templates, I just add my IP to the array.
 // Everyone else will still get the normal jsPerf.
 // It’s an array so I can easily add testers if I want to.
-$debug = in_array($_SERVER['REMOTE_ADDR'], array('81.123.45.123'));
+$debug = in_array($_SERVER['REMOTE_ADDR'], array('81.123.45.123', '127.0.0.1'));
 
 // In case a deploy goes wrong:
 /*
