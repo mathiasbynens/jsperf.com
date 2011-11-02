@@ -230,6 +230,10 @@ input, textarea {
   padding: .4em;
 }
 
+input[type="search"] {
+  -webkit-appearance: none;
+}
+
 #visible, #calibrate { /* checkboxes, for IE */
   border: 0;
   padding: 0;
