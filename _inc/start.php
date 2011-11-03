@@ -1,7 +1,7 @@
 <?php
 
 function __autoload($classname){
-	include_once(strtolower($classname).'.php');
+	include_once(strtolower($classname) . '.php');
 }
 
 require('config.php');
