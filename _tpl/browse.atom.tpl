@@ -7,30 +7,30 @@ header('Content-Type: application/atom+xml;charset=UTF-8');
 header('Last-Modified: ' . date('r', strtotime($item->updated)));
 ?>
 <feed xmlns="http://www.w3.org/2005/Atom" xml:lang="en">
- <title>jsPerf</title>
- <subtitle>The latest twenty new or updated jsPerf test cases</subtitle>
- <link rel="self" type="application/atom+xml" href="http://<?php echo DOMAIN; ?>/browse.atom" />
- <link rel="alternate" type="text/html" href="http://<?php echo DOMAIN; ?>/browse" />
- <updated><?php echo date('c', strtotime($item->updated)); ?></updated>
- <id>tag:<?php echo DOMAIN; ?>,2010:/browse</id>
+	<title>jsPerf</title>
+	<subtitle>The latest twenty new or updated jsPerf test cases</subtitle>
+	<link rel="self" type="application/atom+xml" href="http://<?php echo DOMAIN; ?>/browse.atom" />
+	<link rel="alternate" type="text/html" href="http://<?php echo DOMAIN; ?>/browse" />
+	<updated><?php echo date('c', strtotime($item->updated)); ?></updated>
+	<id>tag:<?php echo DOMAIN; ?>,2010:/browse</id>
 <?php
 if ($result && $result->num_rows > 0) {
- while ($item) {
+	while ($item) {
 ?>
- <entry>
-  <title><?php echo he($item->title); ?></title>
-  <author>
-   <name>jsPerf</name>
-  </author>
-  <link rel="alternate" type="text/html" href="http://<?php echo DOMAIN; ?>/<?php echo $item->url . ($item->revision > 1 ? '/' . $item->revision : ''); ?>" />
-  <summary><?php echo ($item->info ? he($item->info) : 'No description entered'); ?></summary>
-  <id>tag:<?php echo DOMAIN; ?>,2010:/<?php echo $item->url . ($item->revision > 1 ? '/' . $item->revision : ''); ?></id>
-  <published><?php echo date('c', strtotime($item->published)); ?></published>
-  <updated><?php echo date('c', strtotime($item->updated)); ?></updated>
- </entry>
+	<entry>
+		<title><?php echo he($item->title); ?></title>
+		<author>
+			<name>jsPerf</name>
+		</author>
+		<link rel="alternate" type="text/html" href="http://<?php echo DOMAIN; ?>/<?php echo $item->url . ($item->revision > 1 ? '/' . $item->revision : ''); ?>" />
+		<summary><?php echo ($item->info ? he($item->info) : 'No description entered'); ?></summary>
+		<id>tag:<?php echo DOMAIN; ?>,2010:/<?php echo $item->url . ($item->revision > 1 ? '/' . $item->revision : ''); ?></id>
+		<published><?php echo date('c', strtotime($item->published)); ?></published>
+		<updated><?php echo date('c', strtotime($item->updated)); ?></updated>
+	</entry>
 <?php
-  $item = $result->fetch_object();
- }
+		$item = $result->fetch_object();
+	}
 }
 ?>
 </feed>

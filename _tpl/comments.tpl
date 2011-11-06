@@ -4,15 +4,15 @@
 <?php } ?>
 <?php flush(); ?>
 <form action="/<?php echo $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''); ?>#comment-form" method="post" id="comment-form">
- <fieldset>
-  <h2>Add a comment</h2>
-  <div><label for="author">Name <em title="This field is required">*</em> </label><input type="text" name="author" id="author"<?php if ($author) { echo ' value="' . he($author) . '"'; } ?> required><?php if ($nameError) { echo ' ' . $nameError; } ?></div>
-  <div><label for="author-email">Email <em title="This field is required">*</em> </label><?php if (!$mailError) { ?><label class="inline"><?php } ?><input type="email" name="author-email" id="author-email"<?php if ($authorEmail) { echo ' value="' . he($authorEmail) . '"'; } ?> required><?php if ($mailError) { echo ' ' . $mailError; } else { ?> (only used for Gravatar)</label><?php } ?></div>
-  <div><label for="author-url">URL </label><input type="url" name="author-url" id="author-url"<?php if ($authorURL) { echo ' value="' . he($authorURL) . '"'; } ?>></div>
-  <div><label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label><?php epv('message', true, false, true); ?><?php if ($msgError) { echo ' ' . $msgError; } ?></div>
-  <div class="question"><label for="question">Are you a spammer? <span>(just answer the question)</span> </label><input type="text" <?php epv('question'); ?>><?php if ($spamError) { echo ' ' . $spamError; } ?></div>
-  <div class="buttons"><input type="submit" class="submit" value="Add comment"></div>
- </fieldset>
+	<fieldset>
+		<h2>Add a comment</h2>
+		<div><label for="author">Name <em title="This field is required">*</em> </label><input type="text" name="author" id="author"<?php if ($author) { echo ' value="' . he($author) . '"'; } ?> required><?php if ($nameError) { echo ' ' . $nameError; } ?></div>
+		<div><label for="author-email">Email <em title="This field is required">*</em> </label><?php if (!$mailError) { ?><label class="inline"><?php } ?><input type="email" name="author-email" id="author-email"<?php if ($authorEmail) { echo ' value="' . he($authorEmail) . '"'; } ?> required><?php if ($mailError) { echo ' ' . $mailError; } else { ?> (only used for Gravatar)</label><?php } ?></div>
+		<div><label for="author-url">URL </label><input type="url" name="author-url" id="author-url"<?php if ($authorURL) { echo ' value="' . he($authorURL) . '"'; } ?>></div>
+		<div><label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label><?php epv('message', true, false, true); ?><?php if ($msgError) { echo ' ' . $msgError; } ?></div>
+		<div class="question"><label for="question">Are you a spammer? <span>(just answer the question)</span> </label><input type="text" <?php epv('question'); ?>><?php if ($spamError) { echo ' ' . $spamError; } ?></div>
+		<div class="buttons"><input type="submit" class="submit" value="Add comment"></div>
+	</fieldset>
 </form>
 </div>
 </section>

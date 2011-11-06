@@ -2,7 +2,7 @@
 
 // http://crbug.com/85454
 if (isset($item)) {
- header('X-XSS-Protection: 0');
+	header('X-XSS-Protection: 0');
 }
 
 ?>
