@@ -981,8 +981,10 @@ class Markdown_Parser {
  #
  # Create a code span markup for $code. Called from handleSpanToken.
  #
-  //$code = htmlspecialchars(trim($code), ENT_NOQUOTES);
-  return $this->hashPart('<code>' . highlight($code) . '</code>');
+  // $code = htmlspecialchars(trim($code), ENT_NOQUOTES);
+  // GeSHi messes up falsy values; this is a quick and dirty workaround
+  // See https://github.com/mathiasbynens/jsperf.com/issues/50
+  return $this->hashPart('<code>' . ($code ? highlight($code) : $code) . '</code>');
  }
 
 
