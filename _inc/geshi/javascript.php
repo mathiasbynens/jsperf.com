@@ -139,6 +139,9 @@ $language_data = array (
             ),
         1 => array(
             '<script language="javascript">' => '</script>'
+            ),
+        2 => array(
+            '<script>' => '</script>'
             )
         ),
     'HIGHLIGHT_STRICT_BLOCK' => array(
