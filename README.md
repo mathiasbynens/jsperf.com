@@ -6,12 +6,15 @@ MySQL and PHP installed.
 ## How to run a local copy of jsPerf for testing/debugging
 
 1. Download the source code, as located within this repository.
-2. The code expects things to be hosted at `/` and not a subdirectory. You
-   might want to create a new virtual host, e.g. `dev.jsperf.com`.
+2. The code expects things to be hosted at `/` and not a subdirectory. You might
+   want to create a new virtual host, e.g. `dev.jsperf.com`.
 3. Use `_tmp/database.sql` to create the jsPerf tables in a database of choice.
-4. Rename `_inc/config.sample.php` to `config.php` and enter your database
+4. Rename `_inc/config.sample.php` to `_inc/config.php` and enter your database
    credentials and other info.
-5. If you are using Apache, edit `.htaccess` (especially the first few lines)
+5. For the Browserscope integration to work, you’ll need a Browserscope API key.
+   To get one, sign in at [Browserscope.org](http://www.browserscope.org/) and
+   then browse to [the settings page](http://www.browserscope.org/user/settings).
+6. If you are using Apache, edit `.htaccess` (especially the first few lines)
    so it matches your current setup. If you are using Lighttpd, set up the
    `dev.jsperf.com` virtual host using the sample in `_inc/lighttpd.conf`.
 
