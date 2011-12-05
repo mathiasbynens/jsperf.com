@@ -51,6 +51,9 @@ preg_match_all($reScripts, $item->initHTML, $scripts);
 
 // an array of script tags
 $item->scripts = array_shift($scripts);
+if (!is_array($item->scripts)) {
+  $item->scripts = array();
+}
 
 // swap script bodies with tokens
 $highlighted = preg_replace_callback($reScripts, 'Swap::tagsToTokens', $item->initHTML);
@@ -63,9 +66,9 @@ echo $highlighted;
 
 if ($item->setup || $item->teardown) {
 	echo ($highlighted ? '<br>' : '') . '<span class="sc2">&lt;<span class="kw2">script</span>></span><br>'
-				. ($item->setup ? '  Benchmark.<span class="me1">prototype</span>.<span class="me1">setup</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>' . highlight(indent(indent($item->setup))) . '<br>  <span class="br0">}</span><span class="sy0">;</span>' . ($item->teardown ? '<br><br>' : '') : '')
-				. ($item->teardown ? '  Benchmark.<span class="me1">prototype</span>.<span class="me1">teardown</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>' . highlight(indent(indent($item->teardown))) . '<br>  <span class="br0">}</span><span class="sy0">;</span>': '')
-				. '<br><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>></span>';
+	    . ($item->setup ? '  Benchmark.<span class="me1">prototype</span>.<span class="me1">setup</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>' . highlight(indent(indent($item->setup))) . '<br>  <span class="br0">}</span><span class="sy0">;</span>' . ($item->teardown ? '<br><br>' : '') : '')
+	    . ($item->teardown ? '  Benchmark.<span class="me1">prototype</span>.<span class="me1">teardown</span> <span class="sy0">=</span> <span class="kw2">function</span><span class="br0">(</span><span class="br0">)</span> <span class="br0">{</span><br>' . highlight(indent(indent($item->teardown))) . '<br>  <span class="br0">}</span><span class="sy0">;</span>': '')
+	    . '<br><span class="sc2">&lt;<span class="sy0">/</span><span class="kw2">script</span>></span>';
 } ?></code></pre>
 </section>
 <?php if ($stripped) { ?>
