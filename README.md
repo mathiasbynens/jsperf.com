@@ -17,6 +17,13 @@ MySQL and PHP installed.
 6. If you are using Apache, edit `.htaccess` (especially the first few lines)
    so it matches your current setup. If you are using Lighttpd, set up the
    `dev.jsperf.com` virtual host using the sample in `_inc/lighttpd.conf`.
+7. If you plan on using the update script for Benchmark.js/Platform.js
+   (`_tmp/build.php`), you’ll need to make some files writable.
+
+   ```bash
+   chmod 666 _js/benchmark.js _js/benchmark.src.js _js/platform.src.js\
+   _js/ui.browserscope.src.js _js/ui.src.js _inc/version.txt
+   ```
 
 ## License
 
