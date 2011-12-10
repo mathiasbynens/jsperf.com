@@ -39,16 +39,17 @@
   uaToken = '\u2028',
 
   /** Math shortcuts */
+  floor = Math.floor,
   max = Math.max,
   min = Math.min,
-  round = Math.round,
 
   /** Utility shortcuts */
   each = Benchmark.each,
   filter = Benchmark.filter,
-  forIn = Benchmark.forIn,
+  forOwn = Benchmark.forOwn,
   formatNumber = Benchmark.formatNumber,
   hasKey = Benchmark.hasKey,
+  invoke = Benchmark.invoke,
   map = Benchmark.map,
   reduce = Benchmark.reduce;
 
@@ -109,6 +110,21 @@
     var div = createElement('div', context);
     div.innerHTML = 'x<style>' + cssText + '</style>';
     return div.lastChild;
+  }
+
+  /**
+   * Copies own/inherited properties of a source object to the destination object.
+   * @private
+   * @param {Object} destination The destination object.
+   * @param {Object} [source={}] The source object.
+   * @returns {Object} The destination object.
+   */
+  function extend(destination, source) {
+    source || (source = {});
+    for (var key in source) {
+      destination[key] = source[key];
+    }
+    return destination;
   }
 
   /**
@@ -281,50 +297,70 @@
     timers.cleanup = setTimeout(cleanup, delay);
   }
 
- /**
-   * A simple object clone utility function.
-   * @private
-   * @param {Object} object The object to clone.
-   * @returns {Object} A new cloned object.
-   */
-  function clone(object) {
-    var ctor = object.constructor,
-        result = ctor ? (noop.prototype = ctor.prototype, new noop) : {};
-
-    forIn(object, function(value, key) {
-      if (isArray(value)) {
-        result[key] = [];
-        each(value, function(value, index) {
-          result[key][index] = clone(value);
-        });
-      } else if (value && typeof value == 'object') {
-        result[key] = clone(value);
-      } else {
-        result[key] = value;
-      }
-    });
-    return result;
-  }
-
   /**
    * Creates a Browserscope results object.
    * @private
    * @returns {Object|Null} Browserscope results object or null.
    */
   function createSnapshot() {
-    return reduce(ui.benchmarks, function(result, bench, key) {
-      // ignore benches that are unrun, errored, or have hz of Infinity and
-      // append benchmark ids for duplicate names or names with no alphanumeric/space characters
-      var stats = bench.stats;
-      if (bench.cycles && isFinite(bench.hz)) {
-        result || (result = {});
-        key = toLabel(bench.name);
-        // use the upper limit of the confidence interval to compute a lower hz
-        // to avoid recording inflated results caused by a high margin or error
-        result[key && !hasKey(result, key) ? key : key + bench.id ] = round(1 / (stats.mean + stats.moe));
+    // clone benches, ignore those that are unrun, errored, or have hz of Infinity
+    var benches = invoke(filter(ui.benchmarks, function(bench) {
+      return bench.cycles && isFinite(bench.hz);
+    }), 'clone');
+
+    // normalize results
+    var prev;
+    each(benches.sort(function(a, b) {
+      // sort slowest to fastest
+      // (a larger `mean` indicates a slower benchmark)
+      a = a.stats; b = b.stats;
+      return (a.mean + a.moe > b.mean + b.moe) ? -1 : 1;
+    }), function(bench) {
+      // if the previous slower benchmark is indistinguishable from
+      // the current then use the previous benchmark's values
+      if (prev && !prev.compare(bench)) {
+        bench.count = prev.count;
+        bench.cycles = prev.cycles;
+        bench.hz = prev.hz;
+        bench.stats = extend({}, prev.stats);
       }
+      prev = bench;
+    });
+
+    // append benchmark ids for duplicate names or names with no alphanumeric/space characters
+    // and use the upper limit of the confidence interval to compute a lower hz
+    // to avoid recording inflated results caused by a high margin or error
+    return reduce(benches, function(result, bench, key) {
+      var stats = bench.stats;
+      result || (result = {});
+      key = toLabel(bench.name);
+      result[key && !hasKey(result, key) ? key : key + bench.id ] = floor(1 / (stats.mean + stats.moe));
       return result;
     }, null);
+  }
+
+  /**
+   * A simple deep cloning utility function.
+   * @private
+   * @param {Mixed} value The value to clone.
+   * @returns {Mixed} The cloned value.
+   */
+  function deepClone(value) {
+    var fn,
+        ctor,
+        result = value;
+
+    if (isArray(value)) {
+      result = map(value, deepClone);
+    }
+    else if (value === Object(value)) {
+      ctor = value.constructor;
+      result = ctor == Object ? {} : (fn = function(){}, fn.prototype = ctor.prototype, new fn);
+      forOwn(value, function(subValue, key) {
+        result[key] = deepClone(subValue);
+      });
+    }
+    return result;
   }
 
   /**
@@ -336,7 +372,7 @@
   function getDataCells(object) {
     // resolve cells by duck typing because of munged property names
     var result = [];
-    forIn(object, function(value) {
+    forOwn(object, function(value) {
       return !(isArray(value) && (result = value));
     });
     return result;
@@ -353,7 +389,7 @@
         labelMap = {};
 
     // resolve labels by duck typing because of munged property names
-    forIn(object, function(value) {
+    forOwn(object, function(value) {
       return !(isArray(value) && 0 in value && 'type' in value[0] && (result = value));
     });
     // create a data map of labels to names
@@ -382,7 +418,7 @@
         result = [];
 
     // resolve rows by duck typing because of munged property names
-    forIn(object, function(value, key) {
+    forOwn(object, function(value, key) {
       return !(isArray(value) && 0 in value && !('type' in value[0]) && (name = key, result = value));
     });
     // remove empty rows and set the `p.className` on the browser
@@ -428,14 +464,6 @@
     return reduce(object || {}, function(string, value, key) {
       return string.replace(RegExp('#\\{' + key + '\\}', 'g'), value);
     }, string);
-  }
-
-  /**
-   * A no-operation function.
-   * @private
-   */
-  function noop() {
-    // no operation performed
   }
 
   /**
@@ -629,7 +657,7 @@
     if (key) {
       delete responses[key];
     } else {
-      forIn(responses, function(value, key) {
+      forOwn(responses, function(value, key) {
         delete responses[key];
       });
     }
@@ -708,7 +736,7 @@
     // http://code.google.com/apis/chart/interactive/docs/gallery.html
     else if (!ui.running) {
       cont.className = '';
-      data = clone(response.getDataTable());
+      data = deepClone(response.getDataTable());
       labels = getDataLabels(data);
       rows = getDataRows(data);
       rowCount = rows.length;

@@ -85,7 +85,7 @@
   /** API Shortcuts */
   each = Benchmark.each,
   filter = Benchmark.filter,
-  forIn = Benchmark.forIn,
+  forOwn = Benchmark.forOwn,
   formatNumber = Benchmark.formatNumber,
   indexOf = Benchmark.indexOf,
   invoke = Benchmark.invoke;
@@ -438,7 +438,7 @@
         params = me.params || (me.params = {});
 
     // remove old params
-    forIn(params, function(value, key) {
+    forOwn(params, function(value, key) {
       delete params[key];
     });
 
@@ -540,18 +540,6 @@
     var benches = filter(ui.benchmarks, 'successful'),
         fastest = filter(benches, 'fastest'),
         slowest = filter(benches, 'slowest');
-
-    // normalize fastest / slowest
-    each([[fastest.slice(-1)[0], fastest.slice(0, -1)],
-        [slowest[0], slowest.slice(1)]], function(pair) {
-      var source = pair[0];
-      each(pair[1], function(bench) {
-        bench.count = source.count;
-        bench.cycles = source.cycles;
-        bench.hz = source.hz;
-        bench.stats = extend({}, source.stats);
-      });
-    });
 
     ui.render();
     setHTML('run', texts.run.again);
