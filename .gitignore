@@ -1,4 +1,5 @@
 .DS_Store
 _inc/config.php
+_inc/version.txt
 _tmp/.htpasswd
 googlebaa804d93ff10d4a.html
