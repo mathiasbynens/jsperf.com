@@ -2,4 +2,9 @@
 _inc/config.php
 _inc/version.txt
 _tmp/.htpasswd
+_js/benchmark.js
+_js/benchmark.src.js
+_js/platform.src.js
+_js/ui.browserscope.src.js
+_js/ui.src.js
 googlebaa804d93ff10d4a.html
