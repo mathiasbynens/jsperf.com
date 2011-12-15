@@ -7,9 +7,9 @@ if ($search) {
 	$sql = '
 	SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.published, x.updated, y.revisionCount, COALESCE(z.testCount, 0) AS testCount FROM pages x JOIN (SELECT p.slug, MAX(p.updated) AS max_updated, COUNT(*) AS revisionCount FROM pages p WHERE p.visible = "y" GROUP BY p.slug) y ON y.slug = x.slug AND y.max_updated = x.updated LEFT JOIN (SELECT t.pageid, COUNT(*) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = x.id
 	WHERE        x.title LIKE "%' . $db->real_escape_string($search) . '%"
-														OR x.title LIKE "' . $db->real_escape_string($search) . '"
-														OR x.info LIKE "%' . $db->real_escape_string($search) . '%"
-														OR x.info LIKE "' . $db->real_escape_string($search) . '"
+	          OR x.title LIKE "' . $db->real_escape_string($search) . '"
+	          OR x.info LIKE "%' . $db->real_escape_string($search) . '%"
+	          OR x.info LIKE "' . $db->real_escape_string($search) . '"
 	ORDER BY updated DESC';
 	$result = $db->query($sql);
 
