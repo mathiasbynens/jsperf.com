@@ -128,6 +128,8 @@ function removeBackticks($str) {
 }
 
 function addBrowserscopeTest($title = '', $description = '', $url = '') {
+	// Temporarily disable API calls while Browserscope is in read-only mode
+	return false;
 	$bURL = 'http://www.browserscope.org/user/tests/create?api_key=' . BROWSERSCOPE_API_KEY . '&name=' . urlencode($title) . '&description=' . urlencode(substr($description, 0, 60)) . '&url=' . urlencode($url);
 	if ($json = file_get_contents($bURL)) {
 		// $http_response_header is a magic variable containing the resulting headers of file_get_contents()
