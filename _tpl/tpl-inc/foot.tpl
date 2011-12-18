@@ -31,18 +31,16 @@ foreach ($tests as $index => $test) {
     ?>{
     'defer': true,
     'fn': <?php
-    echo "'\\\n      " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n      ", addslashes($test->code)) . "'\n" ?>  }<?php
+    echo "'\\\n      " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n      ", addslashes($test->code)) . "\\\n    '\n" ?>  }<?php
   } else {
     ?>'<?php
-    echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($test->code)) . "\n";
-    ?>'<?php
-	echo "\n  ";
+    echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($test->code)) . "\\\n  '\n  ";
   }
 }
 ?>);
 <?php
-echo ($item->setup ? "\n  Benchmark.prototype.setup = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($item->setup)) . "';\n" : '');
-echo ($item->teardown ? "\n  Benchmark.prototype.teardown = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($item->teardown)) . "';\n" : '')
+echo ($item->setup ? "\n  Benchmark.prototype.setup = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($item->setup)) . "\\\n  ';\n" : '');
+echo ($item->teardown ? "\n  Benchmark.prototype.teardown = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($item->teardown)) . "\\\n  ';\n" : '')
 ?>
 </script>
 <?php
