@@ -34,7 +34,7 @@ foreach ($tests as $index => $test) {
     echo "'\\\n      " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n      ", addslashes($test->code)) . "'\n" ?>  }<?php
   } else {
     ?>'<?php
-    echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($test->code));
+    echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($test->code)) . "\n";
     ?>'<?php
 	echo "\n  ";
   }
