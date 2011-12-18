@@ -5,7 +5,8 @@ if (!empty($_POST)) {
 }
 
 if (in_array($item->browserscopeID, array(NULL, ''))) {
-	$sql = 'UPDATE pages SET browserscopeID = "' . $db->real_escape_string(addBrowserscopeTest($item->title, $item->info, 'http://' . DOMAIN . '/' . $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''))) . '" WHERE id = ' . $item->id . "\n";
+	$item->browserscopeID = addBrowserscopeTest($item->title, $item->info, 'http://' . DOMAIN . '/' . $item->slug . ($item->revision > 1 ? '/' . $item->revision : ''));
+	$sql = 'UPDATE pages SET browserscopeID = "' . $db->real_escape_string($item->browserscopeID) . '" WHERE id = ' . $item->id . "\n";
 	$db->query($sql);
 }
 
