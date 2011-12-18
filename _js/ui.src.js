@@ -88,7 +88,8 @@
   forOwn = Benchmark.forOwn,
   formatNumber = Benchmark.formatNumber,
   indexOf = Benchmark.indexOf,
-  invoke = Benchmark.invoke;
+  invoke = Benchmark.invoke,
+  join = Benchmark.join;
 
   /*--------------------------------------------------------------------------*/
 
@@ -472,7 +473,7 @@
       if (error) {
         setHTML(cell, 'Error');
         addClass(cell, classNames.error);
-        parsed = Benchmark.join(error, '</li><li>');
+        parsed = join(error, '</li><li>');
         logError('<p>' + error + '.</p>' + (parsed ? '<ul><li>' + parsed + '</li></ul>' : ''));
       }
       else {
@@ -649,6 +650,8 @@
     };
   }());
 
+  /*--------------------------------------------------------------------------*/
+
   // fork for runner or embedded chart
   if (has.runner) {
     // detect the scroll element
@@ -677,6 +680,15 @@
       html.scrollTop = scrollTop;
     }());
 
+    // catch and display errors from the "preparation code"
+    window.onerror = function(message, fileName, lineNumber) {
+      logError('<p>' + message + '.</p><ul><li>' + join({
+        'message': message,
+        'fileName': fileName,
+        'lineNumber': lineNumber
+      }, '</li><li>') + '</li></ul>');
+      scrollEl.scrollTop = $('error-info').offsetTop;
+    };
     // inject nano applet
     // (assumes ui.js is just before </body>)
     if ('nojava' in ui.params) {
@@ -697,6 +709,8 @@
       invoke(ui.benchmarks, 'removeAllListeners');
     }, 1);
   }
+
+  /*--------------------------------------------------------------------------*/
 
   // optimized asynchronous Google Analytics snippet based on
   // http://mathiasbynens.be/notes/async-analytics-snippet

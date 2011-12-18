@@ -136,21 +136,23 @@
   function hasKey() {
     // lazy define for others (not as accurate)
     hasKey = function(object, key) {
-      var parent = (object.constructor || Object).prototype;
-      return key in Object(object) && !(key in parent && object[key] === parent[key]);
+      var parent = object != null && (object.constructor || Object).prototype;
+      return !!parent && key in Object(object) && !(key in parent && object[key] === parent[key]);
     };
     // for modern browsers
     if (getClassOf(hasOwnProperty) == 'Function') {
       hasKey = function(object, key) {
-        return hasOwnProperty.call(object, key);
+        return object != null && hasOwnProperty.call(object, key);
       };
     }
     // for Safari 2
     else if ({}.__proto__ == Object.prototype) {
       hasKey = function(object, key) {
-        var result;
-        object = Object(object);
-        object.__proto__ = [object.__proto__, object.__proto__ = null, result = key in object][0];
+        var result = false;
+        if (object != null) {
+          object = Object(object);
+          object.__proto__ = [object.__proto__, object.__proto__ = null, result = key in object][0];
+        }
         return result;
       };
     }
@@ -222,6 +224,9 @@
 
     /** Temporary variable used over the script's lifetime */
     var data,
+
+    /** The CPU architecture */
+    arch = ua,
 
     /** Platform description array */
     description = [],
@@ -572,9 +577,10 @@
       // detect server-side environments
       // Rhino has a global function while others have a global object
       if (isHostType(thisBinding, 'global')) {
-        if (java && !os) {
+        if (java) {
           data = java.lang.System;
-          os = data.getProperty('os.name') + ' ' + data.getProperty('os.version');
+          arch = data.getProperty('os.arch');
+          os = os || data.getProperty('os.name') + ' ' + data.getProperty('os.version');
         }
         if (typeof exports == 'object' && exports) {
           // if `thisBinding` is the [ModuleScope]
@@ -591,8 +597,9 @@
             }
           } else if (typeof process == 'object' && (data = process)) {
             name = 'Node.js';
-            version = /[\d.]+/.exec(data.version)[0];
+            arch = data.arch;
             os = data.platform;
+            version = /[\d.]+/.exec(data.version)[0];
           }
         } else if (getClassOf(window.environment) == 'Environment') {
           name = 'Rhino';
@@ -765,7 +772,7 @@
       description.push((/^on /.test(description[description.length -1]) ? '' : 'on ') + product);
     }
     // add browser/OS architecture
-    if ((data = /\b(?:AMD|IA|Win|WOW|x86_|x)64\b/i).test(ua) && !/\bi686\b/i.test(ua)) {
+    if ((data = /\b(?:AMD|IA|Win|WOW|x86_|x)64\b/i).test(arch) && !/\bi686\b/i.test(arch)) {
       os = os && os + (data.test(os) ? '' : ' 64-bit');
       if (name && (/WOW64/i.test(ua) ||
           (useFeatures && /\w(?:86|32)$/.test(nav.cpuClass || nav.platform)))) {

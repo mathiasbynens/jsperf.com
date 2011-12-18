@@ -61,6 +61,9 @@
     /** Detect Adobe AIR */
     'air': isClassOf(window.runtime, 'ScriptBridgingProxyObject'),
 
+    /** Detect if strings support accessing characters by index */
+    'charByIndex': '0'[0] == '0',
+
     /** Detect if functions support decompilation */
     'decompilation': !!(function() {
       try{
@@ -114,6 +117,9 @@
     */
     'stop': null // lazy defined in `clock()`
   },
+
+  /** Shortcut for inverse result */
+  noCharByIndex = !has.charByIndex,
 
   /** Math shortcuts */
   abs   = Math.abs,
@@ -324,7 +330,7 @@
    *
    * IE compatibility mode and IE < 9 have buggy Array `shift()` and `splice()`
    * functions that fail to remove the last element, `object[0]`, of
-   * array-like-objects (ALOs) even though the `length` property is set to `0`.
+   * array-like-objects even though the `length` property is set to `0`.
    * The `shift()` method is buggy in IE 8 compatibility mode, while `splice()`
    * is buggy regardless of mode in IE < 9 and buggy in compatibility mode in IE 9.
    *
@@ -568,21 +574,98 @@
   }
 
   /**
-   * A simple deep cloning utility function.
+   * A deep clone utility.
    * @private
    * @param {Mixed} value The value to clone.
    * @returns {Mixed} The cloned value.
    */
   function deepClone(value) {
-    var result = value;
-    if (isClassOf(value, 'Array')) {
-      result = map(value, deepClone);
+    var classOf,
+        clone,
+        ctor,
+        data,
+        isArray,
+        key,
+        parent,
+        result,
+        uidKey,
+        index = -1,
+        pool = [],
+        queue = [{ 'value': value }],
+        uidData = function(value) { this.raw = value; },
+        getUid = function(object) {
+          var result = uid;
+          while (object[result] && !(object[result] instanceof uidData)) {
+            result += 1;
+          }
+          return result;
+        };
+
+    while ((data = queue.pop())) {
+      key = data.key;
+      parent = data.parent;
+      clone = value = data.source ? data.source[key] : data.value;
+
+      if (typeof value == 'object' && value) {
+        ctor = value.constructor;
+        switch ((classOf = toString.call(value))) {
+          case '[object Boolean]':
+            clone = new ctor(value == true);
+            break;
+
+          case '[object Date]':
+            clone = new ctor(+value);
+            break;
+
+          case '[object RegExp]':
+            clone = ctor(value.source,
+              (value.global     ? 'g' : '') +
+              (value.ignoreCase ? 'i' : '') +
+              (value.multiline  ? 'm' : ''));
+            break;
+
+          case '[object Number]':
+          case '[object String]':
+            clone = new ctor(value);
+            break;
+
+          default:
+            isArray = classOf == '[object Array]';
+            if (isArray || value.constructor == Object) {
+              clone = isArray ? [] : {};
+              (isArray ? forEach : forOwn)(value, function(subValue, subKey) {
+                if (subValue instanceof uidData) {
+                  return;
+                }
+                if (typeof subValue == 'object' && subValue) {
+                  // check if already seen (prevents circular references)
+                  uidKey = getUid(subValue);
+                  if (subValue[uidKey]) {
+                    clone[subKey] = subValue[uidKey].raw;
+                  } else {
+                    // add to "call" queue
+                    pool.push({ 'uid': uidKey, 'object': subValue });
+                    queue.push({ 'key': subKey, 'parent': clone, 'source': value });
+                  }
+                } else {
+                  clone[subKey] = subValue;
+                }
+              });
+            }
+        }
+        uidKey = getUid(value);
+        pool.push({ 'uid': uidKey, 'object': value });
+        value[uidKey] = new uidData(clone);
+      }
+      if (parent) {
+        parent[key] = clone;
+      } else {
+        result = clone;
+      }
     }
-    else if (value === Object(value) && value.constructor == Object) {
-      result = {};
-      forProps(value, function(subValue, key) {
-        result[key] = deepClone(subValue);
-      }, true);
+    // cleanup
+    while ((data = pool[++index])) {
+      delete data.object[data.uid];
     }
     return result;
   }
@@ -595,30 +678,32 @@
    * @returns {Object} The destination object.
    */
   function extend(destination, source) {
-    simpleEach(arguments, function(source) {
+    delete arguments[0];
+    forEach(arguments, function(source) {
       forProps(source, function(value, key) {
         destination[key] = value;
       });
-    }, 1);
+    });
     return destination;
   }
 
   /**
    * Iterates over an object's properties, executing the `callback` for each.
+   * Callbacks may terminate the loop by explicitly returning `false`.
    * @private
    * @param {Object} object The object to iterate over.
    * @param {Function} callback The function executed per own property.
-   * @param {Boolean} ownFlag A flag to limit iteratation to an object's own properties.
+   * @param {Object} options The options object.
    * @returns {Object} Returns the object iterated over.
    */
   function forProps() {
-    var enumFlag = 0,
-        forArgs = simpleEach,
-        forShadowed = false,
-        hasSeen = false,
+    var forShadowed,
+        skipSeen,
+        forArgs = true,
+        forString = noCharByIndex,
         shadowed = ['constructor', 'hasOwnProperty', 'isPrototypeOf', 'propertyIsEnumerable', 'toLocaleString', 'toString', 'valueOf'];
 
-    (function(key) {
+    (function(enumFlag, key) {
       // must use a non-native constructor to catch the Safari 2 issue
       function Klass() { this.valueOf = 0; };
       Klass.prototype.valueOf = 0;
@@ -630,45 +715,40 @@
       for (key in arguments) {
         key == '0' && (forArgs = false);
       }
+      // Safari 2 iterates over shadowed properties twice
+      // http://replay.waybackmachine.org/20090428222941/http://tobielangel.com/2007/1/29/for-in-loop-broken-in-safari/
+      skipSeen = enumFlag == 2;
+      // IE < 9 incorrectly makes an object's properties non-enumerable if they have
+      // the same name as other non-enumerable properties in its prototype chain.
+      forShadowed = !enumFlag;
     }(0));
 
-    // Safari 2 iterates over shadowed properties twice
-    // http://replay.waybackmachine.org/20090428222941/http://tobielangel.com/2007/1/29/for-in-loop-broken-in-safari/
-    if (enumFlag == 2) {
-      hasSeen = function(seen, key) {
-        return hasKey(seen, key) || !(seen[key] = true);
-      };
-    }
-    // IE < 9 incorrectly makes an object's properties non-enumerable if they have
-    // the same name as other non-enumerable properties in its prototype chain.
-    else if (!enumFlag) {
-      forShadowed = function(object, callback) {
-        // Because IE < 9 can't set the `[[Enumerable]]` attribute of an existing
-        // property and the `constructor` property of a prototype defaults to
-        // non-enumerable, we manually skip the `constructor` property when we
-        // think we are iterating over a `prototype` object.
-        var ctor = object.constructor,
-            skipCtor = ctor && ctor.prototype && ctor.prototype.constructor === ctor;
-        for (var key, index = 0; key = shadowed[index]; index++) {
-          if (!(skipCtor && key == 'constructor') &&
-              hasKey(object, key) &&
-              callback(object[key], key, object) === false) {
-            break;
-          }
-        }
-      };
-    }
-
     // lazy define
-    forProps = function(object, callback, ownFlag) {
-      var done = !object,
-          result = object,
+    forProps = function(object, callback, options) {
+      options || (options = {});
+
+      var ctor,
+          key,
+          skipCtor,
+          done = !object,
+          result = [object, object = Object(object)][0],
+          fn = callback,
+          index = -1,
+          iteratee = object,
+          length = object.length,
+          ownFlag = options.iterate == 'own',
           seen = {},
-          skipProto = isClassOf(object, 'Function');
+          skipProto = isClassOf(object, 'Function'),
+          thisArg = options.bind;
 
       object = Object(object);
 
-      for (var key in object) {
+      if (thisArg !== undefined) {
+        callback = function(value, key, object) {
+          return fn.call(thisArg, value, key, object);
+        };
+      }
+      for (key in object) {
         // Firefox < 3.6, Opera > 9.50 - Opera < 11.60, and Safari < 5.1
         // (if the prototype or a property on the prototype has been set)
         // incorrectly set a function's `prototype` property [[Enumerable]] value
@@ -676,34 +756,41 @@
         // property of functions regardless of their [[Enumerable]] value.
         if (done =
             !(skipProto && key == 'prototype') &&
-            !(hasSeen && hasSeen(seen, key)) &&
+            !(skipSeen && (hasKey(seen, key) || !(seen[key] = true))) &&
             (!ownFlag || ownFlag && hasKey(object, key)) &&
             callback(object[key], key, object) === false) {
           break;
         }
       }
-      if (!done && forArgs && isArguments(object)) {
-        done = forArgs(object, callback) === false;
+      // in IE < 9 strings don't support accessing characters by index
+      if (!done && (
+          forArgs && isArguments(object) ||
+          forString && isClassOf(object, 'String') && (iteratee = object.split('')))) {
+        while (++index < length) {
+          if (done =
+              callback(iteratee[index], String(index), object) === false) {
+            break;
+          }
+        }
       }
       if (!done && forShadowed) {
-        forShadowed(object, callback);
+        // Because IE < 9 can't set the `[[Enumerable]]` attribute of an existing
+        // property and the `constructor` property of a prototype defaults to
+        // non-enumerable, we manually skip the `constructor` property when we
+        // think we are iterating over a `prototype` object.
+        ctor = object.constructor;
+        skipCtor = ctor && ctor.prototype && ctor.prototype.constructor === ctor;
+        for (index = 0; key = shadowed[index]; index++) {
+          if (!(skipCtor && key == 'constructor') &&
+              hasKey(object, key) &&
+              callback(object[key], key, object) === false) {
+            break;
+          }
+        }
       }
       return result;
     };
-
     return forProps.apply(null, arguments);
-  }
-
-  /**
-   * Gets the name of the first argument from a function's source.
-   * @private
-   * @param {Function} fn The function.
-   * @param {String} altName A string used when the name of the first argument is unretrievable.
-   * @returns {String} The argument name.
-   */
-  function getArgumentName(fn, altName) {
-    return (!hasKey(fn, 'toString') &&
-      (/^[\s(]*function[^(]*\(([^\s,)]+)/.exec(fn) || 0)[1]) || altName || '';
   }
 
   /**
@@ -714,6 +801,18 @@
    */
   function getCriticalValue(df) {
     return distribution[Math.round(df) || 1] || distribution.infinity;
+  }
+
+  /**
+   * Gets the name of the first argument from a function's source.
+   * @private
+   * @param {Function} fn The function.
+   * @param {String} altName A string used when the name of the first argument is unretrievable.
+   * @returns {String} The argument name.
+   */
+  function getFirstArgument(fn, altName) {
+    return (!hasKey(fn, 'toString') &&
+      (/^[\s(]*function[^(]*\(([^\s,)]+)/.exec(fn) || 0)[1]) || altName || '';
   }
 
   /**
@@ -753,9 +852,10 @@
    * @returns {String} The modified string.
    */
   function interpolate(string, object) {
-    return reduce(object || {}, function(string, value, key) {
-      return string.replace(RegExp('#\\{' + key + '\\}', 'g'), value);
-    }, string);
+    forOwn(object, function(value, key) {
+      string = string.replace(RegExp('#\\{' + key + '\\}', 'g'), value);
+    });
+    return string;
   }
 
   /**
@@ -771,7 +871,7 @@
     };
     if (!isArguments(arguments)) {
       isArguments = function(value) {
-        return !!value && hasKey(value, 'callee');
+        return hasKey(value, 'callee');
       };
     }
     return isArguments(arguments[0]);
@@ -785,7 +885,7 @@
    * @returns {Boolean} Returns `true` if the value is of the specified class, else `false`.
    */
   function isClassOf(value, name) {
-    return value != null && toString.call(value).slice(8, -1) == name;
+    return value != null && toString.call(value) == '[object ' + name + ']';
   }
 
   /**
@@ -886,37 +986,18 @@
    */
   function setOptions(bench, options) {
     options = extend({}, bench.constructor.options, options);
-    bench.options = forProps(options, function(value, key) {
+    bench.options = forOwn(options, function(value, key) {
       if (value != null) {
         // add event listeners
         if (/^on[A-Z]/.test(key)) {
-          simpleEach(key.split(' '), function(key) {
+          forEach(key.split(' '), function(key) {
             bench.on(key.slice(2).toLowerCase(), value);
           });
         } else {
           bench[key] = deepClone(value);
         }
       }
-    }, true);
-  }
-
-  /**
-   * A simple `each()` for dealing with non-sparse arrays and `arguments` objects.
-   * Callbacks may terminate the loop by explicitly returning `false`.
-   * @private
-   * @param {Array} array The array to iterate over.
-   * @param {Function} callback The function called per iteration.
-   * @param {Number} [index=0] The starting index.
-   * @returns {Array} Returns the array iterated over.
-   */
-  function simpleEach(array, callback, index) {
-    index || (index = 0);
-    for (var length = array.length; index < length; index++) {
-      if (callback(array[index], index, array) === false) {
-        break;
-      }
-    }
-    return array;
+    });
   }
 
   /*--------------------------------------------------------------------------*/
@@ -956,33 +1037,42 @@
    * @returns {Array|Object} Returns the object iterated over.
    */
   function each(object, callback, thisArg) {
-    var index = -1,
-        fn = callback,
+    var fn = callback,
+        index = -1,
         result = [object, object = Object(object)][0],
-        isSnapshot = 'snapshotLength' in object && 'snapshotItem' in object,
-        skipCheck = isSnapshot || 'item' in object,
-        length = isSnapshot ? object.snapshotLength : object.length;
+        origObject = object,
+        length = object.length,
+        isSnapshot = !!(object.snapshotItem && (length = object.snapshotLength)),
+        isSplittable = noCharByIndex && isClassOf(object, 'String'),
+        isConvertable = isSnapshot || isSplittable || 'item' in object;
 
-    if (thisArg !== undefined) {
-      callback = function() { return fn.apply(thisArg, arguments); };
-    }
     // in Opera < 10.5 `hasKey(object, 'length')` returns `false` for NodeLists
     if (length === length >>> 0) {
-      while (++index < length) {
-        // in Safari 2 `index in object` is always `false` for NodeLists
-        if ((skipCheck || index in object) &&
-            callback(isSnapshot ? object.snapshotItem(index) : object[index], index, object) === false) {
-          break;
+      if (isConvertable) {
+        // the third argument of the callback is the original non-array object
+        callback = function(value, index) {
+          fn.call(this, value, index, origObject);
+        };
+        // in IE < 9 strings don't support accessing characters by index
+        if (isSplittable) {
+          object = object.split('');
+        } else {
+          object = [];
+          while (++index < length) {
+            // in Safari 2 `index in object` is always `false` for NodeLists
+            object[index] = isSnapshot ? result.snapshotItem(index) : result[index];
+          }
         }
       }
+      forEach(object, callback, thisArg);
     } else {
-      forProps(object, callback, true);
+      forOwn(object, callback, thisArg);
     }
     return result;
   }
 
   /**
-   * A generic `Array#filter` utility function.
+   * A generic `Array#filter` like method.
    * @static
    * @memberOf Benchmark
    * @param {Array} array The array to iterate over.
@@ -1028,7 +1118,37 @@
   }
 
   /**
+   * A generic `Array#forEach` like method.
+   * Callbacks may terminate the loop by explicitly returning `false`.
+   * @static
+   * @memberOf Benchmark
+   * @param {Array} array The array to iterate over.
+   * @param {Function} callback The function called per iteration.
+   * @param {Object} thisArg The `this` binding for the callback function.
+   * @returns {Array} Returns the array iterated over.
+   */
+  function forEach(array, callback, thisArg) {
+    var fn = callback,
+        index = -1,
+        length = (array = Object(array)).length >>> 0;
+
+    if (thisArg !== undefined) {
+      callback = function(value, index, array) {
+        return fn.call(thisArg, value, index, array);
+      };
+    }
+    while (++index < length) {
+      if (index in array &&
+          callback(array[index], index, array) === false) {
+        break;
+      }
+    }
+    return array;
+  }
+
+  /**
    * Iterates over an object's own properties, executing the `callback` for each.
+   * Callbacks may terminate the loop by explicitly returning `false`.
    * @static
    * @memberOf Benchmark
    * @param {Object} object The object to iterate over.
@@ -1037,11 +1157,7 @@
    * @returns {Object} Returns the object iterated over.
    */
   function forOwn(object, callback, thisArg) {
-    var fn = callback;
-    if (thisArg !== undefined) {
-      callback = function() { return fn.apply(thisArg, arguments); };
-    }
-    return forProps(object, callback, true);
+    return forProps(object, callback, { 'bind': thisArg, 'iterate': 'own' });
   }
 
   /**
@@ -1066,23 +1182,25 @@
    * @returns {Boolean} Returns `true` if key is a direct property, else `false`.
    */
   function hasKey() {
-    // lazy define for others (not as accurate)
+    // lazy define for worst case fallback (not as accurate)
     hasKey = function(object, key) {
-      var parent = (object.constructor || Object).prototype;
-      return key in Object(object) && !(key in parent && object[key] === parent[key]);
+      var parent = object != null && (object.constructor || Object).prototype;
+      return !!parent && key in Object(object) && !(key in parent && object[key] === parent[key]);
     };
     // for modern browsers
     if (isClassOf(hasOwnProperty, 'Function')) {
       hasKey = function(object, key) {
-        return hasOwnProperty.call(object, key);
+        return object != null && hasOwnProperty.call(object, key);
       };
     }
     // for Safari 2
     else if ({}.__proto__ == Object.prototype) {
       hasKey = function(object, key) {
-        var result;
-        object = Object(object);
-        object.__proto__ = [object.__proto__, object.__proto__ = null, result = key in object][0];
+        var result = false;
+        if (object != null) {
+          object = Object(object);
+          object.__proto__ = [object.__proto__, object.__proto__ = null, result = key in object][0];
+        }
         return result;
       };
     }
@@ -1090,7 +1208,7 @@
   }
 
   /**
-   * A generic `Array#indexOf` utility function.
+   * A generic `Array#indexOf` like method.
    * @static
    * @memberOf Benchmark
    * @param {Array} array The array to iterate over.
@@ -1302,8 +1420,8 @@
    */
   function join(object, separator1, separator2) {
     var result = [],
-        length = object.length,
-        arrayLike = 'length' in object && length == length >>> 0;
+        length = (object = Object(object)).length,
+        arrayLike = length === length >>> 0;
 
     separator2 || (separator2 = ': ');
     each(object, function(value, key) {
@@ -1313,7 +1431,7 @@
   }
 
   /**
-   * A generic `Array#map` utility function.
+   * A generic `Array#map` like method.
    * @static
    * @memberOf Benchmark
    * @param {Array} array The array to iterate over.
@@ -1343,7 +1461,7 @@
   }
 
   /**
-   * A generic `Array#reduce` utility function.
+   * A generic `Array#reduce` like method.
    * @static
    * @memberOf Benchmark
    * @param {Array} array The array to iterate over.
@@ -1353,7 +1471,7 @@
    */
   function reduce(array, callback, accumulator) {
     var noaccum = arguments.length < 3;
-    each(array, function(value, index) {
+    forEach(array, function(value, index) {
       accumulator = noaccum ? (noaccum = 0, value) : callback(accumulator, value, index, array);
     });
     return accumulator;
@@ -1424,16 +1542,16 @@
         result = new me.constructor(extend({}, me.options, options));
 
     // copy own properties
-    forProps(me, function(value, key) {
+    forOwn(me, function(value, key) {
       if (!hasKey(result, key)) {
         result[key] = value && isClassOf(value.clone, 'Function') ? value.clone() : deepClone(value);
       }
-    }, true);
+    });
     return result;
   }
 
   /**
-   * A `Array#filter` utility function.
+   * An `Array#filter` like method.
    * @name filter
    * @memberOf Benchmark.Suite
    * @param {Function|String} callback The function/alias called per iteration.
@@ -1536,7 +1654,7 @@
     var me = this,
         events = me.events || (me.events = {});
 
-    simpleEach(type.split(' '), function(type) {
+    forEach(type.split(' '), function(type) {
       (events[type] || (events[type] = [])).push(listener);
     });
     return me;
@@ -1556,7 +1674,7 @@
         listeners = events && events[event.type] || [],
         result = true;
 
-    simpleEach(listeners.slice(), function(listener) {
+    forEach(listeners.slice(), function(listener) {
       if (!(result = listener.apply(me, args) !== false)) {
         return result;
       }
@@ -1582,7 +1700,7 @@
     var me = this,
         events = me.events;
 
-    simpleEach(type.split(' '), function(type) {
+    forEach(type.split(' '), function(type) {
       var listeners = events && events[type] || [],
           index = indexOf(listeners, listener);
       if (index > -1) {
@@ -1612,7 +1730,7 @@
     var me = this,
         events = me.events;
 
-    simpleEach(type ? type.split(' ') : events, function(type) {
+    forEach(type ? type.split(' ') : events, function(type) {
       (events && events[type] || []).length = 0;
     });
     return me;
@@ -1630,7 +1748,7 @@
 
     if (me.running) {
       if (has.timeout) {
-        simpleEach(me._timerIds || [], clearTimeout);
+        forEach(me._timerIds || [], clearTimeout);
         delete me._timerIds;
       }
       // avoid infinite recursion
@@ -1660,12 +1778,15 @@
         result = new me.constructor(extend({}, me.options,
           { 'fn': me.fn, 'id': me.id, 'stats': me.stats, 'times': me.times }, options));
 
+    // pave explicitly set options `fn`, `id`, `stats`, and `times`
+    result.options = extend({}, me.options, options);
+
     // copy own custom properties
-    forProps(me, function(value, key) {
+    forOwn(me, function(value, key) {
       if (!hasKey(result, key)) {
         result[key] = deepClone(value);
       }
-    }, true);
+    });
     return result;
   }
 
@@ -1711,8 +1832,8 @@
     else {
       // a non-recursive solution to check if properties have changed
       // http://www.jslab.dk/articles/non.recursive.preorder.traversal.part4
-      while (pairs.length) {
-        each((pair = pairs.pop(), pair[0]), function(value, key) {
+      while ((pair = pairs.pop())) {
+        forOwn(pair[0], function(value, key) {
           var other = pair[1][key];
           if (value && isClassOf(value, 'Object')) {
             pairs.push([value, other]);
@@ -1774,7 +1895,7 @@
       var deferred = bench instanceof Deferred && [bench, bench = bench.benchmark][0],
           host = bench._host || bench,
           fn = host.fn,
-          fnArg = deferred ? getArgumentName(fn, 'deferred') : '',
+          fnArg = deferred ? getFirstArgument(fn, 'deferred') : '',
           stringable = isStringable(fn),
           decompilable = has.decompilation || stringable,
           source = {
@@ -1811,7 +1932,7 @@
           preprocess(deferred
             ? 'var d$=this,#{fnArg}=d$,r$=d$.resolve,m$=d$.benchmark;m$=m$._host||m$,f$=m$.fn;' +
               'if(!d$.cycles){d$.resolve=function(){d$.resolve=r$;r$.call(d$);' +
-              'if(d$.cycles==m$.count){#{teardown}\n}};#{setup}\nt$.start(d$);}#{fn};return{}'
+              'if(d$.cycles==m$.count){#{teardown}\n}};#{setup}\nt$.start(d$);}#{fn}\nreturn{}'
             : 'var r$,s$,m$=this,f$=m$.fn,i$=m$.count;#{setup}\n#{begin};' +
               'while(i$--){#{fn}\n}#{end};#{teardown}\nreturn{time:r$,uid:"#{uid}"}'),
           source
@@ -1927,8 +2048,8 @@
     /*------------------------------------------------------------------------*/
 
     // detect nanosecond support from a Java applet
-    timer.ns = reduce(window.document && document.applets || [], function(ns, element) {
-      return (applet = ns || 'nanoTime' in element && element);
+    each(window.document && document.applets || [], function(element) {
+      return !(timer.ns = applet = 'nanoTime' in element && element);
     });
 
     // check type in case Safari returns an object instead of a number
@@ -2432,6 +2553,9 @@
     // generic Array#filter
     'filter': filter,
 
+    // generic Array#forEach
+    'forEach': forEach,
+
     // generic own property iteration utility
     'forOwn': forOwn,
 
@@ -2765,16 +2889,16 @@
     'running': false,
 
     /**
-     * An `Array#forEach` utility function.
+     * An `Array#forEach` like method.
      * Callbacks may terminate the loop by explicitly returning `false`.
      * @memberOf Benchmark.Suite
      * @param {Function} callback The function called per iteration.
      * @returns {Object} The suite iterated over.
      */
-    'each': methodize(each),
+    'forEach': methodize(forEach),
 
     /**
-     * An `Array#indexOf` utility function.
+     * An `Array#indexOf` like method.
      * @memberOf Benchmark.Suite
      * @param {Mixed} value The value to search for.
      * @returns {Number} The index of the matched value or `-1`.
@@ -2799,7 +2923,7 @@
     'join': [].join,
 
     /**
-     * An `Array#map` utility function.
+     * An `Array#map` like method.
      * @memberOf Benchmark.Suite
      * @param {Function} callback The function called per iteration.
      * @returns {Array} A new array of values returned by the callback.
@@ -2837,7 +2961,7 @@
     'sort': [].sort,
 
     /**
-     * An `Array#reduce` utility function.
+     * An `Array#reduce` like method.
      * @memberOf Benchmark.Suite
      * @param {Function} callback The function called per iteration.
      * @param {Mixed} accumulator Initial value of the accumulator.
