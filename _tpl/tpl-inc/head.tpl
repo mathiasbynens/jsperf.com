@@ -16,7 +16,7 @@ if (isset($item)) {
 <meta name="description" content="<?php echo trim(shorten(strip_tags(str_replace(array('"', "\n"), array('&quot;', ' '), md($item->info))))); ?>">
 <?php } ?>
 <title><?php if (isset($title)) { ?><?php echo removeBackticks(he($title)); ?> · jsPerf<?php } else { ?>jsPerf: JavaScript performance playground<?php } ?></title>
-<link rel="stylesheet" href="http://<?php echo DOMAIN; /* don’t use ASSETS_DOMAIN here in case the CSS will be XHRed */ ?>/_css/<?php echo $debug ? 'main.src' : '111018'; ?>.css<?php echo $debug ? '?' . time() : ''; ?>">
+<link rel="stylesheet" href="http://<?php echo DOMAIN; /* don’t use ASSETS_DOMAIN here in case the CSS will be XHRed */ ?>/_css/<?php echo $debug ? 'main.src' : '111220'; ?>.css<?php echo $debug ? '?' . time() : ''; ?>">
 <?php if ($home) { ?>
 <link href="/browse.atom" rel="alternate" type="application/atom+xml" title="Atom feed for new or updated test cases">
 <?php } else if ($author) { ?>

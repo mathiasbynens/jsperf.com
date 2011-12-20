@@ -251,6 +251,9 @@ form h2, form h3, form h4, p.error, .preview, #add-libraries, #add-buttons {
 pre {
 	width: 100%;
 	overflow: auto;
+	white-space: pre;
+	white-space: pre-wrap;
+	word-wrap: break-word;
 }
 
 table #results-1 {
