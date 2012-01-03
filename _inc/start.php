@@ -30,6 +30,7 @@ session_start();
 
 ini_set('user_agent', 'jsPerf');
 date_default_timezone_set('Europe/Brussels');
+setlocale(LC_ALL, 'en_US');
 
 // Normalize $_POST, $_GET, $_COOKIE and $_REQUEST in case magic quotes are enabled
 // This script is very inefficient so please use directives instead!
