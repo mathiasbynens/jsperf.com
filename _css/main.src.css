@@ -444,6 +444,9 @@ footer {
 #error-info, code, samp, var, textarea, #slug {
 	font-family: Monaco, monospace;
 	font-size: .9em;
+	-moz-tab-size: 2;
+	-o-tab-size: 2;
+	tab-size: 2;
 }
 
 #java strong {
@@ -500,6 +503,7 @@ footer {
 
 .co1, .co2, .coMULTI {
 	font-style: italic;
+	color: #060;
 }
 
 .error {
@@ -516,14 +520,6 @@ footer {
 
 .kw2 {
 	color: #036;
-}
-
-.co1, .coMULTI {
-	color: #060;
-}
-
-.co2 {
-	color: #096;
 }
 
 .es0 {
