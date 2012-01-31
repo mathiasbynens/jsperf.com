@@ -76,7 +76,8 @@ $reservedSlugs = array(
 	'new',
 	'search',
 	'search.atom',
-	'sitemap.xml'
+	'sitemap.xml',
+	'status'
 );
 
 $reservedActions = array(
@@ -84,7 +85,10 @@ $reservedActions = array(
 	'delete',
 	'publish',
 	'embed',
-	'dev'
+	'dev',
+	'400',
+	'403',
+	'404'
 );
 
 function userAgent() {

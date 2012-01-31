@@ -1,5 +1,4 @@
 <?php
-$e404 = true;
 header('HTTP/1.0 404 Not Found');
 require('head.tpl');
 ?>

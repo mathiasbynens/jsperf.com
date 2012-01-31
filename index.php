@@ -32,12 +32,15 @@ if (!empty($_GET['slug'])) {
 	$atom = isset($_GET['atom']);
 	$author = isset($_GET['author']) ? $_GET['author'] : false;
 	$search = in_array($slug, array('search', 'search.atom')) ? isset($_GET['q']) ? $_GET['q'] : '' : false;
+	$status = $slug == 'status' && $action && is_numeric($action);
 
 	if (in_array($slug, $reservedSlugs)) {
-		if (!$search && !in_array($_SERVER['REQUEST_URI'], array('/' . $slug, '/' . $slug . '.atom', '/browse/' . $author, '/browse/' . $author . '.atom', '/edit-comment/' . $id, '/delete-comment/' . $id))) {
+		if (!$status && !$search && !in_array($_SERVER['REQUEST_URI'], array('/' . $slug, '/' . $slug . '.atom', '/browse/' . $author, '/browse/' . $author . '.atom', '/edit-comment/' . $id, '/delete-comment/' . $id))) {
 			header('Location: http://' . DOMAIN . '/' . $slug, null, 301);
 		}
-		include($slug . ($atom ? '.atom' : '') . '.tpl');
+		if (!include($slug . ($status ? $action : '') . ($atom ? '.atom' : '') . '.tpl')) {
+			include('status404.tpl');
+		}
 		return;
 	} else {
 		$url = '/' . ($author ? 'browse/' . $author . ($atom ? '.atom' : '') : $slug . ($atom ? '.atom' : ($rev > 1 ? '/' . $rev : '') . ($action ? '/' . $action : '')));
@@ -92,11 +95,11 @@ if (!empty($_GET['slug'])) {
 			}
 		} else {
 			@mail(ADMIN_EMAIL, '[jsPerf] Test case without tests, lolwat', $slug);
-			require('404.tpl');
+			require('status404.tpl');
 		}
 	} else {
 		// Error: slug not found
-		require('404.tpl');
+		require('status404.tpl');
 	}
 } else {
 	require('index.tpl');

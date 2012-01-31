@@ -75,6 +75,10 @@ RewriteRule ^browse/([a-z0-9-]+)/?$ index.php?slug=browseAuthor&author=$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^status/([0-9]{3})/?$ index.php?slug=status&action=$1 [L]
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(edit|delete)-comment/([0-9]+)/?$ index.php?slug=$1Comment&id=$2 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
@@ -105,5 +109,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([a-z0-9-]+)? index.php?slug=$1 [L,QSA]
 
-ErrorDocument 403 /403
-ErrorDocument 404 /404
+ErrorDocument 400 /status/400
+ErrorDocument 403 /status/403
+ErrorDocument 404 /status/404
