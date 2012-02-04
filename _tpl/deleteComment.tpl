@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['admin'])) {
-	include('404.tpl');
+	include('status404.tpl');
 	@mail(ADMIN_EMAIL, '[jsPerf] Delete comment hax?', $_SERVER['REMOTE_ADDR'] . ' accessed /delete-comment/' . $id);
 } else {
 	header('Content-Type: text/plain;charset=UTF-8');

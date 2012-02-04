@@ -36,7 +36,7 @@ $output = '<ul>';
 	}
 	$output .= '</ul>';
 } else {
-	require('404.tpl');
+	require('status404.tpl');
 	die();
 }
 

@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION['admin'])) {
-	include('404.tpl');
+	include('status404.tpl');
 	@mail(ADMIN_EMAIL, '[jsPerf] Edit comment hax?', $_SERVER['REMOTE_ADDR'] . ' accessed /edit-comment/' . $id);
 } else {
 	if (!empty($_POST)) {
