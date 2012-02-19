@@ -75,8 +75,8 @@ if (isset($_POST['code'])) {
 	$files = array(
 		'bestiejs/platform.js/master/platform.js' => array('dest' => 'platform.src.js', 'source' => ''),
 		'bestiejs/benchmark.js/master/benchmark.js' => array('dest' => 'benchmark.src.js', 'source' => ''),
-		'bestiejs/benchmark.js/master/examples/jsperf/ui.js' => array('dest' => 'ui.src.js', 'source' => ''),
-		'bestiejs/benchmark.js/master/plugins/ui.browserscope.js' => array('dest' => 'ui.browserscope.src.js', 'source' => '')
+		'bestiejs/benchmark.js/master/example/jsperf/ui.js' => array('dest' => 'ui.src.js', 'source' => ''),
+		'bestiejs/benchmark.js/master/plugin/ui.browserscope.js' => array('dest' => 'ui.browserscope.src.js', 'source' => '')
 	);
 	$source = '';
 	foreach($files as $file => $arr) {
