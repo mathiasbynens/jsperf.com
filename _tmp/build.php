@@ -26,7 +26,7 @@ function minify($code) {
 	curl_setopt($ch, CURLOPT_POSTFIELDS, array(
 		'compresstext' => $code,
 		'semi' => 'on',
-		'redirect' => 'on'
+		'redirect' => '1'
 	));
 	curl_setopt($ch, CURLOPT_HEADER, true);
 // curl_setopt($ch, CURLOPT_NOBODY, true);
