@@ -33,7 +33,7 @@ function minify($code) {
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 	$result = curl_exec($ch);
 	$result = http_parse_headers($result);
-	$location = 'http://refresh-sf.com' . $result['Location'];
+	$location = 'http://refresh-sf.com' . str_replace('.min.js.gz', '.min.js', $result['Location']);
 	curl_close($ch);
 	$result = file_get_contents($location);
 	return strpos($result, '[ERROR]') ? $code : $result;
