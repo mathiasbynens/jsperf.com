@@ -7,7 +7,9 @@ $includePath = implode(PATH_SEPARATOR, array_map(function ($dir) {
 	'_tpl' . DIRECTORY_SEPARATOR . 'tpl-inc',
 	'_inc'
 )));
+
 ini_set('include_path', $includePath);
+
 if (ini_get('session.save_handler') === 'files') {
 	// Make sure the session handler still works when setting open_basedir.
 	$sessionSaveDir = session_save_path() ?: sys_get_temp_dir();
@@ -15,14 +17,17 @@ if (ini_get('session.save_handler') === 'files') {
 } else {
 	ini_set('open_basedir', $includePath);
 }
-require_once('start.php');
 
+require_once('start.php');
 
 if ($_SERVER['HTTP_HOST'] != DOMAIN) {
 	header('Location: http://' . DOMAIN . $_SERVER['REQUEST_URI'], null, 301);
 }
 
-$home = $jsClass = $benchmark = $showAtom = $mainJS = $author = $update = $nameError = $mailError = $msgError = $slugError = $spamError = $codeError = $codeTitleError = $titleError = $error = $author = $authorEmail = $authorURL = $ga = $embed = false;
+$author = $authorEmail = $authorURL = $benchmark = $codeError = $codeTitleError = $embed = $error = $ga = $home = $jsClass = $location = $mailError = $mainJS = $msgError = $nameError = $showAtom = $slugError = $spamError = $titleError = $update = false;
+
+$location = new stdClass;
+$location->href = $location->origin = 'http://' . DOMAIN;
 
 if (!empty($_GET['slug'])) {
 	$slug = $_GET['slug'];
@@ -34,9 +39,11 @@ if (!empty($_GET['slug'])) {
 	$search = in_array($slug, array('search', 'search.atom')) ? isset($_GET['q']) ? $_GET['q'] : '' : false;
 	$status = $slug == 'status' && $action && is_numeric($action);
 
+	$location->href .= '/' . $slug . ($rev > 1 ? '/' . $rev : '');
+
 	if (in_array($slug, $reservedSlugs)) {
 		if (!$status && !$search && !in_array($_SERVER['REQUEST_URI'], array('/' . $slug, '/' . $slug . '.atom', '/browse/' . $author, '/browse/' . $author . '.atom', '/edit-comment/' . $id, '/delete-comment/' . $id))) {
-			header('Location: http://' . DOMAIN . '/' . $slug, null, 301);
+			header('Location: ' . $location->origin . '/' . $slug, null, 301);
 		}
 		if (!include($slug . ($status ? $action : '') . ($atom ? '.atom' : '') . '.tpl')) {
 			include('status404.tpl');
@@ -45,7 +52,7 @@ if (!empty($_GET['slug'])) {
 	} else {
 		$url = '/' . ($author ? 'browse/' . $author . ($atom ? '.atom' : '') : $slug . ($atom ? '.atom' : ($rev > 1 ? '/' . $rev : '') . ($action ? '/' . $action : '')));
 		if ($url != $_SERVER['REQUEST_URI'] && !$id && !$search) {
-			header('Location: http://' . DOMAIN . $url, null, 301);
+			header('Location: ' . $location->origin . $url, null, 301);
 		}
 	}
 
@@ -104,5 +111,4 @@ if (!empty($_GET['slug'])) {
 } else {
 	require('index.tpl');
 }
-
 ?>
