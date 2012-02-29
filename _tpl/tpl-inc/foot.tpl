@@ -1,21 +1,30 @@
 <?php $db->close(); ?>
 </article>
-<footer><a href="/">Add test</a> · <?php
+<footer><a href="<?php echo $location->origin ?>/">Add test</a> · <?php
 if (isset($_SESSION['authorSlug'])) {
-  ?><a href="/browse/<?php echo $_SESSION['authorSlug']; ?>">My tests</a> · <?php
-} ?><a href="/browse">Latest</a> · <a href="/popular">Popular</a> · <a href="/faq">FAQ</a> · <a href="/faq#donate">Donate</a> · <a href="//twitter.com/jsprf" rel="nofollow">twitter: @jsprf</a> · <a href="https://github.com/mathiasbynens/jsperf.com">source on GitHub</a> · <a href="//benchmarkjs.com/">Benchmark.js</a> · by <a href="//mathiasbynens.be/">@mathias</a> and <a href="/contributors">contributors</a></footer>
-<?php if ($benchmark) { if ($debug) { ?>
+  ?><a href="<?php echo $location->origin . '/browse/' . $_SESSION['authorSlug']; ?>">My tests</a> · <?php
+}
+?><a href="<?php echo $location->origin . '/browse';
+?>">Latest</a> · <a href="<?php echo $location->origin . '/popular';
+?>">Popular</a> · <a href="<?php echo $location->origin . '/faq';
+?>">FAQ</a> · <a href="<?php echo $location->origin . '/faq#donate';
+?>">Donate</a> · <a href="//twitter.com/jsprf" rel="nofollow">twitter: @jsprf</a> · <a href="https://github.com/mathiasbynens/jsperf.com">source on GitHub</a> · <a href="//benchmarkjs.com/">Benchmark.js</a> · by <a href="//mathiasbynens.be/">@mathias</a> and <a href="<?php echo $location->origin . '/contributors'
+?>">contributors</a></footer>
+<?php
+if ($benchmark) {
+  if ($debug) { ?>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/platform.src.js"></script>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/benchmark.src.js"></script>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/ui.src.js"></script>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/ui.browserscope.src.js"></script>
 <?php
-} else { ?>
+  } else {
+?>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/benchmark-<?php echo file_get_contents('_inc/version.txt'); ?>.js"></script><?php
-}
-if (isset($item->scripts)) {
-  echo "\n" . implode("\n", $item->scripts) . (count($item->scripts) ? "\n" : '');
-}
+  }
+  if (isset($item->scripts)) {
+	echo "\n" . implode("\n", $item->scripts) . (count($item->scripts) ? "\n" : '');
+  }
 ?>
 <script>
 <?php if ($item->browserscopeID) { ?>

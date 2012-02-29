@@ -16,15 +16,15 @@ if (isset($item)) {
 <meta name="description" content="<?php echo trim(shorten(strip_tags(str_replace(array('"', "\n"), array('&quot;', ' '), md($item->info))))); ?>">
 <?php } ?>
 <title><?php if (isset($title)) { ?><?php echo removeBackticks(he($title)); ?> · jsPerf<?php } else { ?>jsPerf: JavaScript performance playground<?php } ?></title>
-<link rel="stylesheet" href="http://<?php echo DOMAIN; /* don’t use ASSETS_DOMAIN here in case the CSS will be XHRed */ ?>/_css/<?php echo $debug ? 'main.src' : '111220'; ?>.css<?php echo $debug ? '?' . time() : ''; ?>">
+<link rel="stylesheet" href="<?php echo $location->origin; /* don’t use ASSETS_DOMAIN here in case the CSS will be XHRed */ ?>/_css/<?php echo $debug ? 'main.src' : '111220'; ?>.css<?php echo $debug ? '?' . time() : ''; ?>">
 <?php if ($home) { ?>
 <link href="/browse.atom" rel="alternate" type="application/atom+xml" title="Atom feed for new or updated test cases">
 <?php } else if ($author) { ?>
-<link href="/browse/<?php echo $author; ?>.atom" rel="alternate" type="application/atom+xml" title="Atom feed for test cases by this author">
+<link href="<?php echo $location->origin . '/browse/' . $author; ?>.atom" rel="alternate" type="application/atom+xml" title="Atom feed for test cases by this author">
 <?php } else if ($search) { ?>
-<link href="/search.atom?q=<?php echo urlencode($search); ?>" rel="alternate" type="application/atom+xml" title="Atom feed for test cases about <?php echo he($search); ?>">
+<link href="<?php echo $location->origin . '/search.atom?q=' . urlencode($search); ?>" rel="alternate" type="application/atom+xml" title="Atom feed for test cases about <?php echo he($search); ?>">
 <?php } else if ($showAtom) { ?>
-<link href="/<?php echo $slug; ?>.atom" rel="alternate" type="application/atom+xml" title="<?php echo ($slug == 'browse' ? 'Atom feed for new or updated test cases' : 'Atom feed for revisions of this test case'); ?>">
+<link href="<?php echo $location->origin . '/' . $slug; ?>.atom" rel="alternate" type="application/atom+xml" title="<?php echo ($slug == 'browse' ? 'Atom feed for new or updated test cases' : 'Atom feed for revisions of this test case'); ?>">
 <?php } ?>
 <?php if ($jsClass) { ?>
 <script>document.documentElement.className='js'</script>

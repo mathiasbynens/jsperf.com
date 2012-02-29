@@ -14,10 +14,17 @@ if (isOk('author-url')) {
 }
 
 if (isOk('author') && isOk('author-email') && isOk('message') && isOk('question') && $_POST['question'] == 'no') {
-	$sql = 'INSERT INTO comments (pageID, author, authorEmail, authorURL, content, published, ip) VALUES (' . $item->id . ', "' . $db->real_escape_string($_POST['author']) . '", "' . $db->real_escape_string($_POST['author-email']) . '", "' . $db->real_escape_string($_POST['author-url']) . '", "' . $db->real_escape_string($_POST['message']) . '", NOW(), "' . $db->real_escape_string($_SERVER['REMOTE_ADDR']) . '")';
+	$sql = 'INSERT INTO comments (pageID, author, authorEmail, authorURL, content, published, ip) VALUES (' .
+		$item->id . ', "' .
+		$db->real_escape_string($_POST['author']) . '", "' .
+		$db->real_escape_string($_POST['author-email']) . '", "' .
+		$db->real_escape_string($_POST['author-url']) . '", "' .
+		$db->real_escape_string($_POST['message']) . '", NOW(), "' .
+		$db->real_escape_string($_SERVER['REMOTE_ADDR']) . '")';
+
 	if ($db->query($sql)) {
-		@mail(ADMIN_EMAIL, '[jsPerf] Comment added to: ' . $item->title, 'http://' . DOMAIN . '/' . $item->slug . ($item->revision > 1 ? '/' . $item->revision : '') . '#comments');
-		header('Location: http://' . DOMAIN . '/' . $item->slug . ($item->revision > 1 ? '/' . $item->revision : '') . '#comments');
+		@mail(ADMIN_EMAIL, '[jsPerf] Comment added to: ' . $item->title, $location->href . '#comments');
+		header('Location: ' . $location->href . '#comments');
 	}
 } else {
 	if (!isOk('author')) {
@@ -47,5 +54,4 @@ $comments[] = (object) array(
 	'ip' => $_SERVER['REMOTE_ADDR']
 );
 */
-
 ?>
