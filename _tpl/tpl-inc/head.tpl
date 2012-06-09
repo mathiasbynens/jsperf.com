@@ -10,12 +10,14 @@ if (isset($item)) {
 <html lang="en"<?php if ($embed) { ?> class="embed"<?php } ?>>
 <head>
 <meta charset="utf-8">
+<title><?php if (isset($title)) { ?><?php echo removeBackticks(he($title)); ?> · jsPerf<?php } else { ?>jsPerf: JavaScript performance playground<?php } ?></title>
 <?php if ($home) { ?>
 <meta name="description" content="A performance playground for JavaScript developers. Easily create and share test cases and run cross-browser benchmarks to find out which code snippet is most efficient.">
 <?php } else if ($showAtom && isset($item) && '' !== trim($item->info)) { ?>
 <meta name="description" content="<?php echo trim(shorten(strip_tags(str_replace(array('"', "\n"), array('&quot;', ' '), md($item->info))))); ?>">
+<?php } else if ($noIndex) { ?>
+<meta name="robots" content="noindex">
 <?php } ?>
-<title><?php if (isset($title)) { ?><?php echo removeBackticks(he($title)); ?> · jsPerf<?php } else { ?>jsPerf: JavaScript performance playground<?php } ?></title>
 <link rel="stylesheet" href="http://<?php echo DOMAIN; /* don’t use ASSETS_DOMAIN here in case the CSS will be XHRed */ ?>/_css/<?php echo $debug ? 'main.src' : '111220'; ?>.css<?php echo $debug ? '?' . time() : ''; ?>">
 <?php if ($home) { ?>
 <link href="/browse.atom" rel="alternate" type="application/atom+xml" title="Atom feed for new or updated test cases">

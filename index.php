@@ -22,7 +22,7 @@ if ($_SERVER['HTTP_HOST'] != DOMAIN) {
 	header('Location: http://' . DOMAIN . $_SERVER['REQUEST_URI'], null, 301);
 }
 
-$home = $jsClass = $benchmark = $showAtom = $mainJS = $author = $update = $nameError = $mailError = $msgError = $slugError = $spamError = $codeError = $codeTitleError = $titleError = $error = $author = $authorEmail = $authorURL = $ga = $embed = false;
+$home = $jsClass = $benchmark = $showAtom = $mainJS = $author = $update = $nameError = $mailError = $msgError = $slugError = $spamError = $codeError = $codeTitleError = $titleError = $error = $author = $authorEmail = $authorURL = $ga = $embed = $noIndex = false;
 
 if (!empty($_GET['slug'])) {
 	$slug = $_GET['slug'];

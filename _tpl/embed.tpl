@@ -5,6 +5,11 @@ if (in_array($item->browserscopeID, array(NULL, ''))) {
 	$db->query($sql);
 }
 
+// Don’t let robots index non-published test cases
+if ($item->visible === 'n' && (isset($_SESSION['own'][$item->id]) || isset($_SESSION['admin']))) {
+	$noIndex = true;
+}
+
 $benchmark = $jsClass = $embed = true; require('tpl-inc/head.tpl'); ?>
 <hgroup>
 	<h1><a href="/<?php echo $slug . ($item->revision > 1 ? '/' . $item->revision : ''); ?>"><?php echo addCode(he($item->title)); ?></a> — compare results</h1>
