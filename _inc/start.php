@@ -20,7 +20,7 @@ if (!$debug) {
 */
 
 session_name('jsPerf');
-ini_set('use_only_cookies', '1'); // Don’t use query string
+ini_set('session.use_only_cookies', '1'); // Don’t use query string
 ini_set('session.cookie_httponly', true); // So session cookies won’t appear in document.cookie
 ini_set('session.hash_function', '1'); // Use 160-bit SHA-1 encryption
 ini_set('session.hash_bits_per_character', '6'); // 0-9, a-z, A-Z, "-", ","
