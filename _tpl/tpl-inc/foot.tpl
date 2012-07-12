@@ -3,7 +3,7 @@
 <footer><a href="/">Add test</a> · <?php
 if (isset($_SESSION['authorSlug'])) {
   ?><a href="/browse/<?php echo $_SESSION['authorSlug']; ?>">My tests</a> · <?php
-} ?><a href="/browse">Latest</a> · <a href="/popular">Popular</a> · <a href="/faq">FAQ</a> · <a href="/faq#donate">Donate</a> · <a href="//twitter.com/jsprf" rel="nofollow">twitter: @jsprf</a> · <a href="https://github.com/mathiasbynens/jsperf.com">source on GitHub</a> · <a href="//benchmarkjs.com/">Benchmark.js</a> · by <a href="//mathiasbynens.be/">@mathias</a> and <a href="/contributors">contributors</a></footer>
+} ?><a href="/browse">Latest</a> · <a href="/popular">Popular</a> · <a href="/faq">FAQ</a> · <a href="/faq#donate">Donate</a> · <a href="//twitter.com/jsperf" rel="nofollow">twitter: @jsperf</a> · <a href="https://github.com/mathiasbynens/jsperf.com">source on GitHub</a> · <a href="//benchmarkjs.com/">Benchmark.js</a> · by <a href="//mathiasbynens.be/">@mathias</a> and <a href="/contributors">contributors</a></footer>
 <?php if ($benchmark) { if ($debug) { ?>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/platform.src.js"></script>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/_js/benchmark.src.js"></script>
