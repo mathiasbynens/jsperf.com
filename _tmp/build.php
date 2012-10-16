@@ -58,7 +58,7 @@ if (isset($_POST['code'])) {
 	);
 	$output = rtrim(str_replace(array_keys($convert), array_values($convert), trim($_POST['code'], ';')), ';');
 	file_put_contents('../_js/benchmark.js', $output);
-	$file = '/home/jsperf_com/public_html/_inc/version.txt';
+	$file = '/home/jsperf/public_html/_inc/version.txt';
 	$v = (int) file_get_contents($file) + 1;
 	file_put_contents($file, $v);
 	mail(ADMIN_EMAIL, '[jsPerf] Deployed Benchmark.js revision ' . $v, 'Deployed Benchmark.js revision ' . $v);
