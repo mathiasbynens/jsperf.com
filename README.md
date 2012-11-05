@@ -25,6 +25,12 @@ MySQL and PHP installed.
    _js/ui.browserscope.src.js _js/ui.src.js _inc/version.txt
    ```
 
+Note that both `include_path` and `open_basedir` must be set to `./:./_tpl/:./_tpl/tpl-inc/:./_inc/`.
+
+With PHP 5.4 you can easily start an HTTP web server with these settings for quick testing:
+
+    php -d include_path="./:./_tpl/:./_tpl/tpl-inc/:./_inc/" -d open_basedir="./:./_tpl/:./_tpl/tpl-inc/:./_inc/" -d session.save_path="_session" -S localhost:8000
+
 ## License
 
 The source code for [jsPerf](http://jsperf.com/) is copyright
