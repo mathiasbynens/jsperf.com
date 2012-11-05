@@ -26,23 +26,23 @@ if (isset($item->scripts)) {
 foreach ($tests as $index => $test) {
   echo $index ? ")\n  " : '';
 ?>
-.add('<?php echo addslashes(removeBackticks($test->title)); ?>', <?php
+.add('<?php echo etago(addslashes(removeBackticks($test->title))); ?>', <?php
   if ('y' == $test->defer) {
     ?>{
     'defer': true,
     'fn': <?php
-    echo "'\\\n      " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n      ", addslashes($test->code)) . "'\n" ?>  }<?php
+    echo "'\\\n      " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n      ", etago(addslashes($test->code))) . "'\n" ?>  }<?php
   } else {
     ?>'<?php
-    echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($test->code));
+    echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", etago(addslashes($test->code)));
     ?>'<?php
 	echo "\n  ";
   }
 }
 ?>);
 <?php
-echo ($item->setup ? "\n  Benchmark.prototype.setup = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($item->setup)) . "';\n" : '');
-echo ($item->teardown ? "\n  Benchmark.prototype.teardown = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", addslashes($item->teardown)) . "';\n" : '')
+echo ($item->setup ? "\n  Benchmark.prototype.setup = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", etago(addslashes($item->setup))) . "';\n" : '');
+echo ($item->teardown ? "\n  Benchmark.prototype.teardown = '\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", etago(addslashes($item->teardown))) . "';\n" : '')
 ?>
 </script>
 <?php

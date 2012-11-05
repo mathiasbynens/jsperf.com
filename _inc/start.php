@@ -132,6 +132,12 @@ function removeBackticks($str) {
 	return preg_replace('/`(.*?)`/s', '\1', $str);
 }
 
+function etago($str) {
+	// Avoids issues with e.g. `</script>` occuring inside <script> elements.
+	// See http://mathiasbynens.be/notes/etago
+	return str_replace('<', '\x3C', $str);
+}
+
 function addBrowserscopeTest($title = '', $description = '', $url = '') {
 	$bURL = 'http://www.browserscope.org/user/tests/create?api_key=' . BROWSERSCOPE_API_KEY . '&name=' . urlencode($title) . '&description=' . urlencode(substr($description, 0, 60)) . '&url=' . urlencode($url);
 	if ($json = file_get_contents($bURL)) {
