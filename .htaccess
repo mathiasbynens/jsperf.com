@@ -108,6 +108,7 @@ RewriteRule ^([a-z0-9-]+).atom index.php?slug=$1&atom=true [L,QSA]
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^([a-z0-9-]+)? index.php?slug=$1 [L,QSA]
+</IfModule>
 
 ErrorDocument 400 /status/400
 ErrorDocument 403 /status/403
