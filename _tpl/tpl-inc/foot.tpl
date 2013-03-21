@@ -13,9 +13,6 @@ if (isset($_SESSION['authorSlug'])) {
 } else { ?>
 <script src="//<?php echo ASSETS_DOMAIN; ?>/benchmark-<?php echo file_get_contents('_inc/version.txt'); ?>.js"></script><?php
 }
-if (isset($item->scripts)) {
-  echo "\n" . implode("\n", $item->scripts) . (count($item->scripts) ? "\n" : '');
-}
 ?>
 <script>
 <?php if ($item->browserscopeID) { ?>
@@ -36,7 +33,7 @@ foreach ($tests as $index => $test) {
     ?>'<?php
     echo "\\\n    " . preg_replace('/[\r\n]{1,2}/', "\\n\\\n    ", etago(addslashes($test->code)));
     ?>'<?php
-	echo "\n  ";
+  echo "\n  ";
   }
 }
 ?>);
@@ -46,6 +43,9 @@ echo ($item->teardown ? "\n  Benchmark.prototype.teardown = '\\\n    " . preg_re
 ?>
 </script>
 <?php
+  if (isset($item->scripts)) {
+    echo "\n" . implode("\n", $item->scripts) . (count($item->scripts) ? "\n" : '');
+  }
 } else if ($mainJS) { ?>
 <?php flush(); ?>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.5.2/jquery.js"></script>
