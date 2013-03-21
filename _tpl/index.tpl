@@ -101,7 +101,7 @@ $home = $jsClass = $mainJS = true; require('head.tpl');
 		<fieldset id="tests">
 			<h3>Code snippets to compare</h3>
 			<fieldset>
-				<h4>Test 1</h4>
+				<h4>Code snippet 1</h4>
 				<div><label for="test[1][title]">Title <em title="This field is required">*</em> </label><input type="text" <?php epv('title', false, 1); ?> required><?php if ($codeTitleError) { echo ' ' . $codeTitleError; } ?></div>
 				<div><label for="test[1][defer]">Async</label><label class="inline"><input type="checkbox" value="y" <?php epv('defer', false, 1); ?>> (check if this is an <a href="/faq#async">asynchronous test</a>)</label></div>
 				<div><label for="test[1][code]">Code <em title="This field is required">*</em> <span>(No need for loops in the test code; we’ll take care of that for you)</span></label><?php epv('code', true, 1); ?><?php if ($codeError) { echo ' ' . $codeError; } ?></div>
