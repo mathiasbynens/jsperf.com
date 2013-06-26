@@ -21,7 +21,7 @@ if (!isset($_SESSION['admin'])) {
 		<div><label for="author">Name <em title="This field is required">*</em> </label><input type="text" name="author" id="author" value="<?php echo he($r->author); ?>" required></div>
 		<div><label for="author-email">E-mail <em title="This field is required">*</em> </label><input type="email" name="author-email" id="author-email" value="<?php echo he($r->authorEmail); ?>" required></div>
 		<div><label for="author-url">URL </label><input type="url" name="author-url" id="author-url" value="<?php echo he($r->authorURL); ?>"></div>
-		<div><label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label><textarea id="message" name="message" required><?php echo he($r->content); ?></textarea></div>
+		<div><label for="message">Message <em title="This field is required">*</em> <span>Markdown syntax is allowed</span></label><textarea id="message" name="message" maxlength="16777215" required><?php echo he($r->content); ?></textarea></div>
 		<div class="buttons"><input type="submit" class="submit" value="Update comment"></div>
 	</fieldset>
 </form>

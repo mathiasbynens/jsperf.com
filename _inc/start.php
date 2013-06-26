@@ -220,9 +220,9 @@ function isOk($var) {
 function epv($var, $textarea = false, $testID = false, $req = false) {
 	if ($textarea) {
 		if ($testID) {
-			$output = '<textarea name="test[' . $testID . '][' . $var . ']" id="test[' . $testID . '][' . $var . ']" class="code-js"' . ($testID < 3 ? ' required' : '') . '>' . (isset($_POST['test'][$testID][$var]) ? $_POST['test'][$testID][$var] : '') . '</textarea>';
+			$output = '<textarea name="test[' . $testID . '][' . $var . ']" id="test[' . $testID . '][' . $var . ']" class="code-js" maxlength="16777215"' . ($testID < 3 ? ' required' : '') . '>' . (isset($_POST['test'][$testID][$var]) ? $_POST['test'][$testID][$var] : '') . '</textarea>';
 		} else {
-			$output = '<textarea name="' . $var . '" id="' . $var . '"' . ($req ? ' required' : '') . '>' . (isset($_POST[$var]) ? he($_POST[$var]) : '') . '</textarea>';
+			$output = '<textarea name="' . $var . '" id="' . $var . '" maxlength="16777215"' . ($req ? ' required' : '') . '>' . (isset($_POST[$var]) ? he($_POST[$var]) : '') . '</textarea>';
 		}
 	} else if ($testID) {
 		$output = 'name="test[' . $testID . '][' . $var . ']" id="test[' . $testID . '][' . $var . ']"';

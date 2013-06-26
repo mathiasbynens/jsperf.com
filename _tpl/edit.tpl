@@ -84,16 +84,16 @@ $title = 'Editing ' . $title; $jsClass = $mainJS = true; require('head.tpl'); ?>
 		<h3>Test case details</h3>
 		<div><label for="title">Title <em title="This field is required">*</em> </label><input type="text" name="title" id="title" value="<?php echo he($item->title); ?>" required><?php if ($titleError) { echo ' ' . $titleError; } ?></div>
 		<div><label for="visible">Published </label><label class="inline"><input type="checkbox" name="visible" id="visible" value="y"<?php if ($item->visible === 'y') { ?> checked<?php } ?>> <?php if ($item->visible === 'y') { ?>(uncheck if you want to fiddle around before making the page public)<?php } else { ?>(check when your test case is finished)<?php }?></label></div>
-		<div><label for="info">Description <span>(in case you feel further explanation is needed)</span><span>(Markdown syntax is allowed)</span> </label><textarea name="info" id="info"><?php echo he($item->info); ?></textarea></div>
+		<div><label for="info">Description <span>(in case you feel further explanation is needed)</span><span>(Markdown syntax is allowed)</span> </label><textarea name="info" id="info" maxlength="16777215"><?php echo he($item->info); ?></textarea></div>
 		<div class="question"><label for="question">Are you a spammer? <span>(just answer the question)</span> </label><input type="text" name="question" id="question"><?php if ($spamError) { echo ' ' . $spamError; } ?></div>
 		<fieldset>
 			<h3>Preparation code</h3>
 			<div>
-				<label for="prep-html">Preparation code HTML <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)</span> <span>(useful when testing DOM operations or including libraries)</span> </label><textarea name="prep-html" id="prep-html"><?php echo he($item->initHTML); ?></textarea>
+				<label for="prep-html">Preparation code HTML <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)</span> <span>(useful when testing DOM operations or including libraries)</span> </label><textarea name="prep-html" id="prep-html" maxlength="16777215"><?php echo he($item->initHTML); ?></textarea>
 				<p id="add-libraries">Include JavaScript libraries as follows: <code>&lt;script src="//cdn.ext/library.js">&lt;/script></code></p>
 			</div>
-			<div><label for="setup">Define <code>setup</code> for all tests <span>(variables, functions, arrays or other objects that will be used in the tests)</span> <span>(runs before each clocked test loop, outside of the timed code region)</span> <span>(e.g. define local test variables, reset global variables, clear <code>canvas</code>, etc.)</span> <span>(<a href="/faq#setup-teardown">see FAQ</a>)</span> </label><textarea name="setup" id="setup"><?php echo he($item->setup); ?></textarea></div>
-			<div><label for="teardown">Define <code>teardown</code> for all tests <span>(runs after each clocked test loop, outside of the timed code region)</span> <span>(<a href="/faq#setup-teardown">see FAQ</a>)</span> </label><textarea name="teardown" id="teardown"><?php echo he($item->teardown); ?></textarea></div>
+			<div><label for="setup">Define <code>setup</code> for all tests <span>(variables, functions, arrays or other objects that will be used in the tests)</span> <span>(runs before each clocked test loop, outside of the timed code region)</span> <span>(e.g. define local test variables, reset global variables, clear <code>canvas</code>, etc.)</span> <span>(<a href="/faq#setup-teardown">see FAQ</a>)</span> </label><textarea name="setup" id="setup" maxlength="16777215"><?php echo he($item->setup); ?></textarea></div>
+			<div><label for="teardown">Define <code>teardown</code> for all tests <span>(runs after each clocked test loop, outside of the timed code region)</span> <span>(<a href="/faq#setup-teardown">see FAQ</a>)</span> </label><textarea name="teardown" id="teardown" maxlength="16777215"><?php echo he($item->teardown); ?></textarea></div>
 		</fieldset>
 		<fieldset id="tests">
 			<h3>Code snippets to compare</h3>
@@ -102,7 +102,7 @@ $title = 'Editing ' . $title; $jsClass = $mainJS = true; require('head.tpl'); ?>
 				<h4>Test <?php echo ++$i; ?></h4>
 				<div><label for="test[<?php echo $i; ?>][title]">Title </label><input type="text" name="test[<?php echo $i; ?>][title]" id="test[<?php echo $i; ?>][title]" value="<?php echo he($test->title); ?>"></div>
 				<div><label for="test[<?php echo $i; ?>][defer]">Async </label><label class="inline"><input type="checkbox" value="y" <?php epv('defer', false, $i); if ('y' == $test->defer) { ?> checked<?php } ?>> (check if this is an <a href="/faq#async">asynchronous test</a>)</label></div>
-				<div><label for="test[<?php echo $i; ?>][code]">Code </label><textarea name="test[<?php echo $i; ?>][code]" id="test[<?php echo $i; ?>][code]" class="code-js"><?php echo he($test->code); ?></textarea><input type="hidden" name="test[<?php echo $i; ?>][id]" value="<?php echo $test->testID; ?>"></div>
+				<div><label for="test[<?php echo $i; ?>][code]">Code </label><textarea name="test[<?php echo $i; ?>][code]" id="test[<?php echo $i; ?>][code]" class="code-js" maxlength="16777215"><?php echo he($test->code); ?></textarea><input type="hidden" name="test[<?php echo $i; ?>][id]" value="<?php echo $test->testID; ?>"></div>
 			</fieldset>
 <?php } ?>
 		</fieldset>
