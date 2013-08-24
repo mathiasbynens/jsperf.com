@@ -67,24 +67,33 @@ if (isset($_POST['code'])) {
 	header('Content-Type: text/html;charset=UTF-8');
 	$convert = array(
 		'gaId = \'\'' => 'gaId = \'UA-6065217-40\'',
-		'if (freeExports)' => 'if (false)',
+		'if (freeExports && !freeExports.nodeType)' => 'if (false)',
 		'\'selector\': \'\'' => '\'selector\': \'#bs-results\'',
-		'archive = \'../../nano.jar\'' => 'archive = \'/_jar/nano.jar\''
+		'archive = \'../../nano.jar\'' => 'archive = \'/_jar/nano.jar\'',
+		'var _ = runInContext();' => '_ = runInContext();return;',
+		'window.platform =' => 'platform =',
+		'var _ = context && context._ || req(\'lodash\') || window._;' => '',
+		'\'platform\': context.platform' => '\'platform\': platform'
 	);
 	$_SESSION['admin'] = true;
 	$files = array(
+		'bestiejs/lodash/v1.3.1/dist/lodash.compat.js' => array('dest' => 'lodash.js', 'source' => ''),
 		'bestiejs/platform.js/master/platform.js' => array('dest' => 'platform.src.js', 'source' => ''),
 		'bestiejs/benchmark.js/master/benchmark.js' => array('dest' => 'benchmark.src.js', 'source' => ''),
 		'bestiejs/benchmark.js/master/example/jsperf/ui.js' => array('dest' => 'ui.src.js', 'source' => ''),
 		'bestiejs/benchmark.js/master/plugin/ui.browserscope.js' => array('dest' => 'ui.browserscope.src.js', 'source' => '')
 	);
-	$source = '';
+	$source = '(function(){var _,platform;';
 	foreach($files as $file => $arr) {
 		$files[$file]['source'] = str_replace(array_keys($convert), array_values($convert), preg_replace('/(if\s*\()(typeof define|freeDefine)\b/', '$1false', file_get_contents('https://raw.github.com/' . $file)));
 		file_put_contents('../_js/' . $arr['dest'], $files[$file]['source']);
 		$source .= "\n\n" . $files[$file]['source'];
 	}
+	$source .= '}.call(this))';
+
+
 	$source = minify(trim($source));
+	//$source = trim($source);
 ?>
 <!DOCTYPE html><title>Deploy Benchmark.js</title><style>textarea{width:100%;height:40em;font-family:Consolas}</style><form method=post><textarea name=code autofocus><?php echo he($source); ?>
 </textarea><input type=submit value=deploy></form>
