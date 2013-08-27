@@ -90,10 +90,6 @@ $faq = array(
 		'title' => 'How long will my tests be available on jsPerf?',
 		'answer' => 'Every test case and/or revision that’s added to jsPerf will remain here forever. You can safely link to any jsPerf document; in general, all URLs are supposed to be permalinks.<br>However, this rule does not apply to invalid/spammy tests, because those will likely get removed.'
 	),
-	'monitoring' => (object) array(
-		'title' => 'What about performance monitoring?',
-		'answer' => 'While jsPerf is tailored for benchmarking snippets of code, it’s not suitable for evaluating the performance of entire apps. You may want to check out <a href="https://github.com/bestiejs/xstats.js">xStats.js</a>, which is a more generic performance monitoring library.'
-	),
 	'additional-features' => (object) array(
 		'title' => 'Will you implement <var>[feature XYZ]</var>?',
 		'answer' => 'Why not? I’m <a href="https://github.com/mathiasbynens/jsperf.com/issues" rel="nofollow">open to suggestions</a>, so please let me know if you have an idea that could make jsPerf more awesome.'
