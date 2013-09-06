@@ -77,7 +77,7 @@ if (isset($_POST['code'])) {
 	);
 	$_SESSION['admin'] = true;
 	$files = array(
-		'bestiejs/lodash/v1.3.1/dist/lodash.compat.js' => array('dest' => 'lodash.js', 'source' => ''),
+		'lodash/lodash/1.3.1/dist/lodash.compat.js' => array('dest' => 'lodash.js', 'source' => ''),
 		'bestiejs/platform.js/master/platform.js' => array('dest' => 'platform.src.js', 'source' => ''),
 		'bestiejs/benchmark.js/master/benchmark.js' => array('dest' => 'benchmark.src.js', 'source' => ''),
 		'bestiejs/benchmark.js/master/example/jsperf/ui.js' => array('dest' => 'ui.src.js', 'source' => ''),
