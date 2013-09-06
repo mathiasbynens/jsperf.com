@@ -71,8 +71,8 @@ if (isset($_POST['code'])) {
 		'\'selector\': \'\'' => '\'selector\': \'#bs-results\'',
 		'archive = \'../../nano.jar\'' => 'archive = \'/_jar/nano.jar\'',
 		'var _ = runInContext();' => '_ = runInContext();return;',
-		'window.platform =' => 'platform =',
-		'var _ = context && context._ || req(\'lodash\') || window._;' => '',
+		'root.platform =' => 'platform =',
+		'var _ = context && context._ || req(\'lodash\') || root._;' => '',
 		'\'platform\': context.platform' => '\'platform\': platform'
 	);
 	$_SESSION['admin'] = true;
