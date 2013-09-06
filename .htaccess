@@ -21,6 +21,11 @@ AddType text/css;charset=UTF-8 .css
 	ExpiresByType image/x-icon "access plus 1 year"
 </IfModule>
 
+<Files .git*>
+	order allow,deny
+	deny from all
+</Files>
+
 <IfModule mod_rewrite.c>
 
 	RewriteEngine On
