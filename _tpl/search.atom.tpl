@@ -1,11 +1,17 @@
 <?php
 $sql = '
-SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.info, x.published, x.updated, y.revisionCount, COALESCE(z.testCount, 0) AS testCount FROM pages x JOIN (SELECT p.slug, MAX(p.updated) AS max_updated, COUNT(*) AS revisionCount FROM pages p WHERE p.visible = "y" GROUP BY p.slug) y ON y.slug = x.slug AND y.max_updated = x.updated LEFT JOIN (SELECT t.pageid, COUNT(*) AS testCount FROM tests t GROUP BY t.pageid) z ON z.pageid = x.id
-WHERE        x.title LIKE "%' . $db->real_escape_string($search) . '%"
-													OR x.title LIKE "' . $db->real_escape_string($search) . '"
-													OR x.info LIKE "%' . $db->real_escape_string($search) . '%"
-													OR x.info LIKE "' . $db->real_escape_string($search) . '"
-ORDER BY updated DESC LIMIT 20';
+	SELECT * FROM (
+		SELECT x.id AS pID, x.slug AS url, x.revision, x.title, x.updated, COUNT(x.slug) AS revisionCount
+		FROM pages x
+		WHERE x.title LIKE "%' . $db->real_escape_string($search) . '%" OR x.info LIKE "%' . $db->real_escape_string($search) . '%"
+		GROUP BY x.slug
+		ORDER BY updated DESC
+		LIMIT 0, 20
+	) y LEFT JOIN (
+		SELECT t.pageid, COUNT(t.pageid) AS testCount
+		FROM tests t
+		GROUP BY t.pageid
+	) z ON z.pageid = y.pID';
 $result = $db->query($sql);
 $item = $result->fetch_object();
 header('Content-Type: application/atom+xml;charset=UTF-8');
