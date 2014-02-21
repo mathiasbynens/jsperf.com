@@ -17,6 +17,7 @@ if (isset($item)) {
 <meta name="description" content="<?php echo trim(shorten(strip_tags(str_replace(array('"', "\n"), array('&quot;', ' '), md($item->info))))); ?>">
 <?php } else if ($noIndex) { ?>
 <meta name="robots" content="noindex">
+<meta name="referrer" content="origin">
 <?php } ?>
 <link rel="stylesheet" href="http://<?php echo DOMAIN; /* don’t use ASSETS_DOMAIN here in case the CSS will be XHRed */ ?>/_css/<?php echo $debug ? 'main.src' : '130824'; ?>.css<?php echo $debug ? '?' . time() : ''; ?>">
 <?php if ($home) { ?>
