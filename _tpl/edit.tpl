@@ -17,7 +17,7 @@ if (!empty($_POST)) {
 	}
 	// Check input
 	$codeCount = countNonEmptyStrings($_POST['test'], 'code');
-	if (isOk('title') && isOk('test') && codeCount > 1 && isOk('question') && $_POST['question'] === 'no') {
+	if (isOk('title') && isOk('test') && $codeCount > 1 && isOk('question') && $_POST['question'] === 'no') {
 		$rev = ++$item->maxRev;
 		$visible = (isset($_POST['visible']) && $_POST['visible'] === 'y') ? 'y' : 'n';
 		$browserscopeID = addBrowserscopeTest($_POST['title'], $_POST['info'], 'http://' . DOMAIN . '/' . $slug . '/' . $rev);
@@ -59,7 +59,7 @@ if (!empty($_POST)) {
 		if (!isOk('question') || $_POST['question'] !== 'no') {
 			$spamError = '<span class="error">Please enter ‘no’ to prove you’re not a spammer.</span>';
 		}
-		if (codeCount < 2) {
+		if ($codeCount < 2) {
 			$codeError = '<p class="error">Please enter a code snippet.</p>';
 		}
 		if ('' === trim($_POST['test'][1]['title'])) {
