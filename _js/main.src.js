@@ -116,7 +116,7 @@ $(function() {
 					return;
 				}
 				var slug = sluggify(this.value);
-				$slug.val(slug)
+				$slug.val(slug);
 				$preview.text(slug);
 			}
 		}).trigger('keyup');
