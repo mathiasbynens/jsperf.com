@@ -60,7 +60,7 @@ $faq = array(
 	),
 	'setup-teardown' => (object) array(
 		'title' => 'Is it possible to execute code before and after each clocked test loop, outside of the timed code region?',
-		'answer' => 'That’s what <a href="http://benchmarkjs.com/docs#Benchmark:setup" title="Benchmark.prototype.setup"><code>Benchmark#setup</code></a> and <a href="http://benchmarkjs.com/docs#Benchmark:teardown" title="Benchmark.prototype.teardown"><code>Benchmark#teardown</code></a> are for. You can use the Setup and Teardown fields to use the same function(s) for all tests. To target specific tests, you can use <code>ui.benchmarks[<var>0</var>].setup = function(){ … };</code> (and/or <code>teardown</code>) in the Preparation Code field, where <code><var>0</var></code> is the zero-indexed test ID.'
+		'answer' => 'That’s what <a href="http://benchmarkjs.com/docs#prototype_setup" title="Benchmark.prototype.setup"><code>Benchmark#setup</code></a> and <a href="http://benchmarkjs.com/docs#prototype_teardown" title="Benchmark.prototype.teardown"><code>Benchmark#teardown</code></a> are for. You can use the Setup and Teardown fields to use the same function(s) for all tests. To target specific tests, you can use <code>setTimeout(function() { ui.benchmarks[<var>0</var>].setup = function(){ … }; }, 1);</code> (and/or <code>teardown</code>) in the Preparation Code field, where <code><var>0</var></code> is the zero-indexed test ID.'
 	),
 	'async' => (object) array(
 		'title' => 'How can I run asynchronous tests?',
