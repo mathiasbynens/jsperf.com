@@ -92,7 +92,7 @@ $home = $jsClass = $mainJS = true; require('head.tpl');
 		<fieldset>
 			<h3>Preparation code</h3>
 			<div>
-				<label for="prep-html">Preparation code HTML <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)</span> <span>(useful when testing DOM operations or including libraries)</span> </label><?php epv('prep-html', 1); ?>
+				<label for="prep-html">Preparation code HTML <span>(this will be inserted in the <code>&lt;body></code> of a valid HTML5 document in standards mode)</span> <span>(useful when testing DOM operations or including libraries)</span> <span>(use <a href="https://rawgit.com/">rawgit.com</a> instead of raw.github.com)</span> </label><?php epv('prep-html', 1); ?>
 				<p id="add-libraries">Include JavaScript libraries as follows: <code>&lt;script src="//cdn.ext/library.js">&lt;/script></code></p>
 			</div>
 			<div><label for="setup">Define <code>setup</code> for all tests <span>(variables, functions, arrays or other objects that will be used in the tests)</span> <span>(runs before each clocked test loop, outside of the timed code region)</span> <span>(e.g. define local test variables, reset global variables, clear <code>canvas</code>, etc.)</span> <span>(<a href="/faq#setup-teardown">see FAQ</a>)</span> </label><?php epv('setup', 1); ?></div>
