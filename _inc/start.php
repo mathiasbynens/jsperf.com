@@ -217,6 +217,15 @@ function isOk($var) {
 	return isset($_POST[$var]) && !empty($_POST[$var]);
 }
 
+// Gets a count from $arr where member[$subkey] is not null or whitespace.
+function countNonEmptyStrings($arr, $subkey)
+{
+	if(!is_array($arr)||!isset($subkey)) return 0;
+	return array_reduce($arr, function($carry, $item) use ($subkey){
+		return $carry + (isset($item[$subkey]) && '' !== trim($item[$subkey]) ? 1 : 0);
+	}, 0);
+}
+
 function epv($var, $textarea = false, $testID = false, $req = false) {
 	if ($textarea) {
 		if ($testID) {
